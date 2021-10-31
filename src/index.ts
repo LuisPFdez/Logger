@@ -119,8 +119,8 @@ export class Logger {
     private formatear(formato: string): string {
 
         // Remplaza por la fecha y la hora
-        formato = formato.replace(new RegExp("%{s}", "g"), "${new Date().getSeconds()}");
-        formato = formato.replace(new RegExp("%{i}", "g"), "${new Date().getMinutes()}");
+        formato = formato.replace(new RegExp("%{s}", "g"), "${`0${new Date().getSeconds()}`.slice(-2)}");
+        formato = formato.replace(new RegExp("%{i}", "g"), "${`0${new Date().getMinutes()}`.slice(-2)}");
         formato = formato.replace(new RegExp("%{H}", "g"), "${new Date().getHours()}");
         formato = formato.replace(new RegExp("%{D}", "g"), "${new Date().getDate()}");
         formato = formato.replace(new RegExp("%{M}", "g"), "${new Date().getMonth()}");
@@ -417,7 +417,6 @@ export class Logger {
     /**
      * Guarda un mensaje de log en el archivo del Tipo LOG
      * @typeParam E - Tipo que desciende de error 
-     * @param tipo string, tipo del mensaje 
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
@@ -434,7 +433,6 @@ export class Logger {
     /**
      * Guarda un mensaje de log en el archivo del Tipo INFO
      * @typeParam E - Tipo que desciende de error 
-     * @param tipo string, tipo del mensaje 
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
@@ -451,7 +449,6 @@ export class Logger {
     /**
      * Guarda un mensaje de log en el archivo del Tipo ERROR 
      * @typeParam E - Tipo que desciende de error 
-     * @param tipo string, tipo del mensaje 
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
