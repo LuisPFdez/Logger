@@ -1,4 +1,4 @@
-import { ColoresLogger } from "./ColoresLogger"
+import { ColoresLogger } from "./ColoresLogger";
 
 /** 
  *Interfaz que define todas las opciones de configuracion posibles, todas opcionales
