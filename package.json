@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LuisPFdez/Logger.git"
+    "url": "git+https://github.com/LuisPFdez/Logger-TS.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LuisPFdez/Logger/issues"
+    "url": "https://github.com/LuisPFdez/Logger-TS/issues"
   },
-  "homepage": "https://github.com/LuisPFdez/Logger#readme",
+  "homepage": "https://github.com/LuisPFdez/Logger-TS#readme",
   "devDependencies": {
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
