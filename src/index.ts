@@ -6,8 +6,10 @@ import { resolve, join, extname, basename } from "path";
 import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
 import { R_OK, W_OK } from "constants";
 
+//Exporta las interfaces y errores para permitir ser accesibles desde el propio modulo
 export { LoggerError, ColoresLogger, LoggerConfig };
 
+//Enum que define el nivel del log para el registro global
 export enum NIVEL_LOG {
     TODOS = 0,
     LOG = 1,
@@ -18,7 +20,9 @@ export enum NIVEL_LOG {
     NINGUNO = 6
 }
 
+//Formato por defecto
 export const formato_defecto = "(%{T})[%{D}-%{M}-%{Y}, %{H}:%{i}] - %{R}";
+// Formato de error por defecto
 export const formato_error_defecto = "(%{T})[%{D}-%{M}-%{Y}, %{H}:%{i}]( %{N} {%{F},%{L}} [%{E}] - {%{A}}) - %{R}";
 
 declare global {
