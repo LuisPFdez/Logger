@@ -11,7 +11,7 @@ export interface LoggerConfig {
 }
 
 /**
- * Interfaz que define los mismos parametros que LoggerConfig sin ser opcioneales
+ * Interfaz que define los mismos parametros que LoggerConfig sin ser opcionales
  * @see {@link LoggerConfig}
  */
 export interface LoggerConfigE {

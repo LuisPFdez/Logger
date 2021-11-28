@@ -9,12 +9,14 @@ import { R_OK, W_OK } from "constants";
 //Exporta las interfaces y errores para permitir ser accesibles desde el propio modulo
 export { LoggerError, ColoresLogger, LoggerConfig };
 
-//Enum que define el nivel del log para el registro global
+/**
+ * Enum que define el nivel del log para el registro global 
+ */
 export enum NIVEL_LOG {
     TODOS = 0,
     LOG = 1,
     INFO = 2,
-    WARN = 3,
+    AVISO = 3,
     ERROR = 4,
     FATAL = 5,
     NINGUNO = 6
@@ -388,7 +390,7 @@ export class Logger {
     }
 
     /**
-     * Muestra un mensaje por consola del tipo WARN
+     * Muestra un mensaje por consola del tipo AVISO
      * @typeParam E - Tipo que desciende de error 
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion 
@@ -399,9 +401,9 @@ export class Logger {
      * manejar un error es distinto al normal. En caso de necesitar manejar un error, este no ha de ser 
      * instancia de Error
      */
-    warn_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    AVISO_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
-        this.consola(NIVEL_LOG.WARN, "INFO", msg, config, error);
+        this.consola(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
     /**
@@ -516,7 +518,7 @@ export class Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo WARN
+     * Guarda un mensaje de log en el archivo del Tipo AVISO
      * @typeParam E - Tipo que desciende de error 
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
@@ -527,8 +529,8 @@ export class Logger {
      * manejar un error es distinto al normal. En caso de necesitar manejar un error, este no ha de ser 
      * instancia de Error
      */
-    warn_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
-        this.archivo(NIVEL_LOG.WARN, "WARN", msg, config, error);
+    AVISO_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+        this.archivo(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
     /**
