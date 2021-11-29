@@ -77,10 +77,10 @@ export class Logger {
      * %{M} - Muestra el mes,
      * %{Y} - Muestra el año,
      * %{T} - Muestra el tipo de log
-     * %{T} - Muestra el modulo donde ha saltado el error o se ha llamado al metodo,
-     * %{A} - Muestra el archivo donde ha saltado el error o se ha llamado al metodo,
+     * %{F} - Muestra el modulo donde se lanza el error o se ha llamado al metodo,
+     * %{A} - Muestra el archivo donde se lanza el error o se ha llamado al metodo,
      * %{R} - Muestra el mensaje pasado al metodo,
-     * %{L} - Muestra la linea donde ha saltado el error o se ha llamado al metodo,
+     * %{L} - Muestra la linea donde se lanza el error o se ha llamado al metodo,
      * %{N} - Muestra el nombre del error,
      * %{E} - Muestra el mensaje del error,
      * %{CR} - Pinta de color rojo (Consola),
