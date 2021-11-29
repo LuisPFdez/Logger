@@ -76,11 +76,11 @@ export class Logger {
      * %{D} - Muestra el dia,
      * %{M} - Muestra el mes,
      * %{Y} - Muestra el año,
-     * %{T} - Muestra el tipo de log
-     * %{F} - Muestra el modulo donde se lanza el error o se ha llamado al metodo,
-     * %{A} - Muestra el archivo donde se lanza el error o se ha llamado al metodo,
+     * %{T} - Muestra el tipo de log,
+     * %{F} - Muestra el modulo donde se lanza el error o se llama al metodo,
+     * %{A} - Muestra el archivo donde se lanza el error o se llama al metodo,
      * %{R} - Muestra el mensaje pasado al metodo,
-     * %{L} - Muestra la linea donde se lanza el error o se ha llamado al metodo,
+     * %{L} - Muestra la linea donde se lanza el error o se llama al metodo,
      * %{N} - Muestra el nombre del error,
      * %{E} - Muestra el mensaje del error,
      * %{CR} - Pinta de color rojo (Consola),
@@ -179,8 +179,9 @@ export class Logger {
     }
 
     /**
+     * Metodo para obtener datos del stack de un error
      * @typeParam E - Tipo que desciende de error 
-     * @param error Error del que se van a obtener los datos
+     * @param error E, Error del que se van a obtener los datos
      * @returns Objeto con propiedades del error
      */
     private obtener_datos_stack<E extends Error>(error: E): { nombre_error: string, mensaje_error: string, funcion: string, linea: string, archivo: string } {
@@ -215,6 +216,19 @@ export class Logger {
             //En caso de que al formatear, salte una excepcion
             return datos;
         }
+    }
+
+    /** 
+     * Metodo para comprobar el tipo de error.
+     * @typeParam E - Tipo que desciende de error 
+     * @param error E, error  
+     * @returns 
+     */
+    private comprobar_tipo_error<E extends Error>(error: E): boolean {
+        //Comprueba si el stack del error es undefined, en ese caso devolverá un true
+        if (error.stack == undefined) return true;
+        //Comprueba si el error es una instancia (directa) de Error y si el error proviene de un metodo de la clase logger
+        return error.constructor.name == "Error" && /at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo))/.test(error.stack);
     }
 
     /**
@@ -327,7 +341,7 @@ export class Logger {
         //Comprueba si error es instancia (directa) de Error
         //En caso de que el error, utilizado entre otras cosas para saber desde donde se llama al metodo, sea 
         //distinto de Error, valor por defecto
-        const tipoE = error.constructor.name == "Error";
+        const tipoE = this.comprobar_tipo_error(error);
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto
@@ -401,7 +415,7 @@ export class Logger {
      * manejar un error es distinto al normal. En caso de necesitar manejar un error, este no ha de ser 
      * instancia de Error
      */
-    AVISO_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    aviso_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
         this.consola(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
@@ -456,7 +470,7 @@ export class Logger {
         //Comprueba si error es instancia (directa) de Error
         //En caso de que el error, utilizado entre otras cosas para saber desde donde se llama al metodo, sea 
         //distinto de Error, valor por defecto
-        const tipoE = error.constructor.name == "Error";
+        const tipoE = this.comprobar_tipo_error(error);
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
@@ -529,7 +543,7 @@ export class Logger {
      * manejar un error es distinto al normal. En caso de necesitar manejar un error, este no ha de ser 
      * instancia de Error
      */
-    AVISO_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    aviso_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
