@@ -336,6 +336,10 @@ export class Logger {
      * @param error E, cualquier tipo de error
      */
     private consola<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
+        //Copia el objeto para evitar modificarlo involuntariamente, debido a que contiene otro objeto este tambien necesita ser copiado
+        config = { ...config };
+        config.colores = <ColoresLogger>{ ...config.colores };
+
         //Comprueba si el nivel es mayor al nivel para registrar el log
         if (nivel < this._nivel) return; //Si el nivel es menor no registrara nada
         //Guarda en variables las propiedades del objeto devuelto por obtener_datos_stack
@@ -469,6 +473,9 @@ export class Logger {
      * @param error E, cualquier tipo de error
      */
     private archivo<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
+        //Copia el objeto para evitar modificarlo involuntariamente, debido a que contiene otro objeto este tambien necesita ser copiado
+        config = { ...config };
+        config.colores = <ColoresLogger>{ ...config.colores };
         //Comprueba si el nivel es mayor al nivel para registrar el log
         if (nivel < this._nivel) return; //Si el nivel es menor no registrara nada
         //Guarda en variables las propiedades del objeto devuelto por obtener_datos_stack
@@ -481,7 +488,7 @@ export class Logger {
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
-        const {fichero, colores, formato } = this.configuracion(config, tipoE, {
+        const { fichero, colores, formato } = this.configuracion(config, tipoE, {
             FINC: "",
             ROJO: "",
             VERDE: "",
