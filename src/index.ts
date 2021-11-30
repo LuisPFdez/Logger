@@ -50,6 +50,8 @@ String.prototype.compilarPlantilla = function (this: string, args: Record<string
     return new Function(...nombres, `return \`${this}\``)(...valores);
 };
 
+const exp_logger = new RegExp(/at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo))/);
+
 /**
  * Clase para el manejo del sistema de logs
  */
@@ -196,7 +198,8 @@ export class Logger {
             //Obtiene la primera linea que empieza por "at", elimina los espacios del inicio y el final y los separa por 
             //espacios en blanco, optiene las posiciones segunda y tercera del array y las guarda en archivo y linea
             const [, funcion, linea] = elementos[elementos.findIndex((elemento) => {
-                if (/^at/i.test(elemento.trim())) {
+                elemento = elemento.trim();
+                if (/^at/i.test(elemento) && !exp_logger.test(elemento)) {
                     return true;
                 }
             })].trim().split(" ");
@@ -228,7 +231,7 @@ export class Logger {
         //Comprueba si el stack del error es undefined, en ese caso devolverá un true
         if (error.stack == undefined) return true;
         //Comprueba si el error es una instancia (directa) de Error y si el error proviene de un metodo de la clase logger
-        return error.constructor.name == "Error" && /at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo))/.test(error.stack);
+        return error.constructor.name == "Error" && exp_logger.test(error.stack);
     }
 
     /**
