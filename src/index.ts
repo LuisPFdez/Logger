@@ -346,6 +346,10 @@ export class Logger {
         //distinto de Error, valor por defecto
         const tipoE = this.comprobar_tipo_error(error);
 
+        //Elimina la propiedad de fichero del objeto de configuracion para evitar, en caso de tener algun valor, hacer
+        //las comprobaciones de la configuracion
+        delete config.fichero;
+
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto
         const { colores, formato } = this.configuracion(config, tipoE, {
@@ -477,7 +481,7 @@ export class Logger {
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
-        const { colores, formato } = this.configuracion(config, tipoE, {
+        const {fichero, colores, formato } = this.configuracion(config, tipoE, {
             FINC: "",
             ROJO: "",
             VERDE: "",
@@ -499,7 +503,7 @@ export class Logger {
         })).toString();
 
         //Añade al final del archivo el mensaje
-        appendFileSync(this._fichero, plantilla + "\n");
+        appendFileSync(fichero, plantilla + "\n");
     }
 
     /**
