@@ -1,5 +1,5 @@
 import { LoggerError } from "./lib/Error";
-import { ColoresLogger } from "./lib/ColoresLogger";
+import { Colores, ColoresLogger } from "./lib/ColoresLogger";
 import { LoggerConfig, LoggerConfigE } from "./lib/LoggerConfig";
 
 import { resolve, join, extname, basename } from "path";
@@ -7,7 +7,7 @@ import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
 import { R_OK, W_OK } from "constants";
 
 //Exporta las interfaces y errores para permitir ser accesibles desde el propio modulo
-export { LoggerError, ColoresLogger, LoggerConfig };
+export { LoggerError, ColoresLogger, LoggerConfig, Colores };
 
 /**
  * Enum que define el nivel del log para el registro global 
@@ -474,7 +474,7 @@ export class Logger {
     private archivo<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
         //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
-        
+
         //Comprueba si el nivel es mayor al nivel para registrar el log
         if (nivel < this._nivel) return; //Si el nivel es menor no registrara nada
         //Guarda en variables las propiedades del objeto devuelto por obtener_datos_stack
@@ -484,6 +484,9 @@ export class Logger {
         //En caso de que el error, utilizado entre otras cosas para saber desde donde se llama al metodo, sea 
         //distinto de Error, valor por defecto
         const tipoE = this.comprobar_tipo_error(error);
+
+        //Elimnia la propiedad de colores para evitar, que se establezcan y aparezcan en el archivo
+        delete config.colores;
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
