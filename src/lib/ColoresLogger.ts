@@ -15,4 +15,4 @@ export const Colores: ColoresLogger = {
     VERDE: "\x1b[32m",
     AMARILLO: "\x1b[33m",
     AZUL: "\x1b[34m"
-}
+};
