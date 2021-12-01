@@ -4,12 +4,12 @@ Librería para el manejo de logs en TypeScript y JavaScript
 <img height="150" src="./Docs/Icono.png">
 
 ## Librería 
-Las dependencias del paquete son únicamente de desarrollo y poder compilar los archivos Typescript
+Las dependencias del paquete son únicamente de desarrollo y poder compilar los archivos TypeScript
 
 Es posible copiar el código fuente en el proyecto, sin embargo, es recomendable incluirla como una librería externa
 
 ### Copiar Librería
-Si se copian los archivos fuente o compilados, bastará con la importarlos desde el archivo que lo necesite
+Si se copian los archivos fuente o compilados, bastará con importarlos desde el archivo que lo necesite
 
 ```JS
 // TypeScript/JavaScript 
@@ -20,13 +20,13 @@ const { Logger } = require("./index");
 ```
 
 ### NPM
-Para usar la librería tanto con JavaScript como con TypeScript es necesario [compilar a JavaScript](#compilar-a-javaScript)
+Para usar la librería tanto con JavaScript como con TypeScript es necesario [compilar a JavaScript](#compilar-a-javascript)
 
 Con `npm link` es posible incluir, como una dependencia, librarías externas que no se encuentren dentro del propio gestor.
 
-Dentro de la carpeta donde se ha clonado el repositorio, ejecuta npm link. Esto creara un link simbólico en la carpeta global de npm ( solo es necesario hacerlo una vez )
+Dentro de la carpeta donde se ha clonado el repositorio, ejecuta npm link. Esto creará un link simbólico en la carpeta global de npm (solo es necesario hacerlo una vez)
 
-Luego, dentro de las carpetas donde se quiere usar, ejecuta npm link nombre_paquete. El nombre del paquete viene dado por *name*, dentro de el package.json en este caso **logger**
+Luego, dentro de las carpetas donde se quiere usar, ejecuta npm link nombre_paquete. El nombre del paquete viene dado por *name*, dentro del package.json en este caso **logger**
 
 Es posible hacerlo todo en un paso, ejecutando npm link /ruta/relativa/o/absoluta. La ruta puede ser relativa o absoluta a la carpeta de la librería
 
@@ -79,23 +79,23 @@ Una vez instaladas las dependencias. Hay tres formas de hacerlo:
 ```BASH
 npm run build:ts
 ```
-2. La segunda es similar a la primera (es necesario en el mismo directorio que *tsconfig.json*, o  de lo contrario, dará error).
+2. La segunda es similar a la primera (es necesario en el mismo directorio que *tsconfig.json*, o de lo contrario, dará error).
 ```BASH
 npx tsc
 ```
-3. La ultima, similar a la anteriores pero ejecuta antes una comprobación del código (útil si se ha modificado el código).
+3. La última, similar a las anteriores, pero ejecuta antes una comprobación del código (útil si se ha modificado el código).
 ```BASH
 npm run build 
 ```
 
-**Al finalizar, se habrá generado una carpeta *dist*, la cual contendrá los archivos de javascript y los archivos de declaración de TypeScript**
+**Al finalizar, se habrá generado una carpeta *dist*, la cual contendrá los archivos de JavaScript y los archivos de declaración de TypeScript**
 
 #### Archivos de declaración (TypeScript)
 Proporcionan información a TypeScript sobre una API escrita en JavaScript. Permitiendo usar la API en TypeScript. 
 
-Estos archivos tienen una extensión **.d.ts** y son necesarios unicamente para TypeScript. Permiten a TypeScript asignar características del lenguaje, que no están presentes en JavaScript.
+Estos archivos tienen una extensión **.d.ts** y son necesarios únicamente para TypeScript. Permiten a TypeScript asignar características del lenguaje, que no están presentes en JavaScript.
 
-Estos archivos no influyen para nada en el código JavaScrip. Sin embargo, en caso de querer evitar que se incluyan en la compilación, es necesario modificar la propiedad **declaration** del archivo de [configuración del compilador](./tsconfig.json).
+Estos archivos no influyen para nada en el código JavaScript. Sin embargo, en caso de querer evitar que se incluyan en la compilación, es necesario modificar la propiedad **declaration** del archivo de [configuración del compilador](./tsconfig.json).
 ```JSON
 {
     "compilerOptions": {
@@ -109,11 +109,11 @@ Clase principal, encargada de la los registros log.
 
 ### Constructor
 
-El constructor recibe 5 parametros (todos son opcionales).
+El constructor recibe 5 parámetros (todos son opcionales).
 
-1. **fichero** <*string*>, nombre del fichero ( no ha de especificarse la ruta en el nombre, es omitida en caso de especificarse), por defecto *logger.log*. Si el fichero no existe, creará un nuevo archivo. En caso de que el archivo exista, comprobará la extensión por seguridad, solo escribirá sobre los archivos con extension log. El archivo ha de tener permisos de lectura y escritura.
+1. **fichero** <*string*>, nombre del fichero (no ha de especificarse la ruta en el nombre, es omitida en caso de especificarse), por defecto *logger.log*. Si el fichero no existe, creará un nuevo archivo. En caso de que el archivo exista, comprobará la extensión por seguridad, solo escribirá sobre los archivos con extensión log. El archivo ha de tener permisos de lectura y escritura.
 2. **ruta** <*string*>, ruta donde se almacenará el fichero. Por defecto el directorio será *./*. Si la ruta no existe o no es un directorio lanzará una excepción.
-3. **nivel** <*NIVEL_LOG*>, nivel de log minimo para el registro de logs.
+3. **nivel** <*NIVEL_LOG*>, nivel de log mínimo para el registro de logs.
 4. **formato** <*string*>, formato normal del log.
 5. **formato_error** <*string*>, formato para logs de errores.
 
@@ -130,9 +130,9 @@ const {Logger, NIVEL_LOG, formato_defecto, formato_error_defecto } = require("lo
 
 const log = new Logger("Archivo_Log.log", "ruta/archivo", NIVEL_LOG.TODOS, formato_defecto, formato_error_defecto);
 ```
-### Cambiar parametros de la clase
+### Cambiar parámetros de la clase
 
-Todos los parametros de la clase pueden ser modificados cuando se desee. Al establecer un nuevo valor este funcionará igual que al establecerlo en el constructor. Tambien es posible ver su actual valor.
+Todos los parámetros de la clase pueden ser modificados cuando se desee. Al establecer un nuevo valor este funcionará igual que al establecerlo en el constructor. También es posible ver su actual valor.
 
 TypeScript
 ```TS
@@ -148,7 +148,7 @@ console.log(log.ruta);
 
 //Para modificar una propiedad
 log.fichero = "./archivo.log";
-//Al modificar la ruta tambien cambiará la ruta del fichero
+//Al modificar la ruta también cambiará la ruta del fichero
 log.ruta = "./tmp";
 
 log.log_archivo("Log en un archivo diferente");
@@ -171,7 +171,7 @@ console.log(log.ruta);
 
 //Para modificar una propiedad
 log.fichero = "./archivo.log";
-//Al modificar la ruta tambien cambiará la ruta del fichero
+//Al modificar la ruta también cambiará la ruta del fichero
 log.ruta = "./tmp";
 
 log.log_archivo("Log en un archivo diferente");
@@ -181,13 +181,13 @@ console.log(log.ruta);
 ```
 
 ### Logs
-La clase logger ofrece dos formas de registrar los logs, mediante la consola o en un archivo. Estos a su vez ofrecen distintos tipos de logs, cada tipo tendra su [prioridad](#niveles-log).
+La clase logger ofrece dos formas de registrar los logs, mediante la consola o en un archivo. Estos a su vez ofrecen distintos tipos de logs, cada tipo tendrá su [prioridad](#niveles-log).
 
-Todos los metodos, independientemente del nivel y la forma de registrarlo, reciben 3 párametros. Siendo dos de ellos opcionales.
+Todos los métodos, independientemente del nivel y la manera de registrarlo, reciben 3 parámetros. Siendo dos de ellos opcionales.
 
-1. **msg** <*string*>, mensaje del log, es el único párametro obligatorio.
-2. **config** <*LoggerConfig*>, configuración especifica para el log (fichero, formato y/o colores ). En caso de no querer modificar la configuración pero sea necesario pasar un tercer párametro, bastará con un objeto vacio (valor por defecto).  
-3. **error** <*Error*>, excepcion de la que se obtiene datos del error. En caso de no recibir ninguna, su valor por defecto, será una instancia de la clase Error (permite obtener ciertos datos como el fichero, el metodo o la linea desde donde se ha llamado ).
+1. **msg** <*string*>, mensaje del log, es el único parámetro obligatorio.
+2. **config** <*LoggerConfig*>, configuración especifica para el log (fichero, formato y/o colores). En caso de no querer modificar la configuración, pero sea necesario pasar un tercer parámetro, bastará con un objeto vacío (valor por defecto).  
+3. **error** <*Error*>, excepción de la que se obtiene datos del error. En caso de no recibir ninguna, su valor por defecto, será una instancia de la clase Error (permite obtener ciertos datos como el fichero, el método o la línea desde donde se ha llamado).
 
 TypeScript
 ```TS
@@ -238,7 +238,7 @@ const log = new Logger();
 try {
     log.log_consola("Log normal");
 
-    //Tambien es posible instanciar un error y mostrara el formato error
+    //También es posible instanciar un error y mostrará el formato error
     log.log_consola("Log error", {}, new Error("Excepcion"));
 
     //Se lanza una excepcion
@@ -258,7 +258,7 @@ const log = new Logger();
 try {
     log.log_consola("Log normal");
 
-    //Tambien es posible instanciar un error y mostrara el formato error
+    //También es posible instanciar un error y mostrará el formato error
     log.log_consola("Log error", {}, new Error("Excepcion"));
 
     //Se lanza una excepcion
@@ -273,7 +273,7 @@ try {
 
 La clase logger maneja dos formatos de logs. 
 - **Formato Normal**, formato por defecto para los logs.
-- **Formato Errores**, formato para los errores. Este formato es usado al pasarle una excepcion en la llamada para el log.
+- **Formato Errores**, formato para los errores. Este formato es usado al pasarle una excepción en la llamada para el log.
 
 Las constantes **formato_defecto**  y **formato_error_defecto**, permiten acceder al valor por defecto que tienen los formatos.
 
@@ -283,21 +283,21 @@ export const formato_defecto = "(%{T})[%{D}-%{M}-%{Y}, %{H}:%{i}] - %{R}";
 // Formato de error por defecto
 export const formato_error_defecto = "(%{T})[%{D}-%{M}-%{Y}, %{H}:%{i}]( %{N} {%{F},%{L}} [%{E}] - {%{A}}) - %{R}";
 ```
-Para crear un formato propio, existen ciertos parametros que podran sustituirse por su correspondiente valor. Todos estos parametros han de estar entre `%{}`, por ejemplo `%{T}`
+Para crear un formato propio, existen ciertos parámetros que podrán sustituirse por su correspondiente valor. Todos estos parámetros han de estar entre `%{}`, por ejemplo `%{T}`
 
-| Parametro | Valor                                                             |
+| Parámetro | Valor                                                             |
 |:---------:|-------------------------------------------------------------------|
 | **s**     | Muestra los segundos                                              |
 | **i**     | Muestra los minutos                                               |
-| **H**     | Muestra las hora                                                  |
-| **D**     | Muestra el dia                                                    |
+| **H**     | Muestra las horas                                                 |
+| **D**     | Muestra el día                                                    |
 | **M**     | Muestra el mes                                                    |
 | **Y**     | Muestra el año                                                    |
 | **T**     | Muestra el tipo de log                                            |
-| **F**     | Muestra el modulo donde se lanza el error o se llama al metodo    |
-| **A**     | Muestra el archivo donde se lanza el error o se llama al metodo   |
-| **R**     | Muestra el mensaje pasado al metodo                               |
-| **L**     | Muestra la linea donde se lanza el error o se llama al metodo     |
+| **F**     | Muestra el módulo donde se lanza el error o se llama al método    |
+| **A**     | Muestra el archivo donde se lanza el error o se llama al método   |
+| **R**     | Muestra el mensaje pasado al método                               |
+| **L**     | Muestra la línea donde se lanza el error o se llama al método     |
 | **N**     | Muestra el nombre del error                                       |
 | **E**     | Muestra el mensaje del error                                      |
 | **CR**    | Pinta de color rojo (Consola)                                     |
@@ -307,12 +307,12 @@ Para crear un formato propio, existen ciertos parametros que podran sustituirse 
 | **CF**    | Marca el fin de coloreado                                         |
 
 ### LoggerConfig - Configuración de Log
-Al registrar un log, es posible establecer una configuración específica para el log. La interfaz LoggerConfig (TypeScript), permite establecer las propiedades de un objeto de configuración (existe otro llamado LoggerConfigE, es posible que aparezca como una recomendación del IDE,similar pero sin las propiedades opcionales, su uso se limita al funcionamiento interno de la librería).  
+Al registrar un log, es posible establecer una configuración específica para el log. La interfaz LoggerConfig (TypeScript), permite establecer las propiedades de un objeto de configuración (existe otro llamado LoggerConfigE, es posible que aparezca como una recomendación del IDE, similar pero sin las propiedades opcionales, su uso se limita al funcionamiento interno de la librería).  
 
 LoggerConfig posee tres propiedades, todas opcionales:
 - **colores** <*ColoresLogger*>, permite establecer una paleta de colores personalizada. No es posible modificar la paleta de los [log de archivo](#colores). 
-- **fichero** <*string*>, permite establecer un fichero especifico para el log (la ruta será la misma que la de la clase). **Esta propiedad solo afecta a los log de archivo**
-- **formato** <*string*>, permite establecer un formato especifico para el registro, independientemente de los formatos por defecto.
+- **fichero** <*string*>, permite establecer un fichero específico para el log (la ruta será la misma que la de la clase). **Esta propiedad solo afecta a los log de archivo**
+- **formato** <*string*>, permite establecer un formato específico para el registro, independientemente de los formatos por defecto.
 
 TypeScript
 ```TS
@@ -328,7 +328,7 @@ const config: LoggerConfig = {
 log.log_consola("Log normal", config);
 log.log_archivo("Log normal", config);
 
-//Tambien es posible instanciar un error y mostrara el formato error
+//El formato de config tendrá prioridad sobre el formato de error
 log.log_consola("Log error", config, new Error("Excepcion"));
 ```
 
@@ -346,23 +346,23 @@ const config = {
 log.log_consola("Log normal", config);
 log.log_archivo("Log normal", config);
 
-//Tambien es posible instanciar un error y mostrara el formato error
+//El formato de config tendrá prioridad sobre el formato de error
 log.log_consola("Log error", config, new Error("Excepcion"));
 ```
 
 #### Colores
-Es posible establecer colores, en los formatos, estos unicamente se muestran por consola, en un archivo se mostraría el código del color. Sin embargo la aplicación permite cambiar la paleta de colores en las llamadas a los logs, como un objeto dentro del objeto de [configuración de los log](#loggerconfig-configuración-de-log).
+Es posible establecer colores, en los formatos, estos únicamente se muestran por consola, en un archivo se mostraría el código del color. Sin embargo, la aplicación permite cambiar la paleta de colores en las llamadas a los logs, como un objeto dentro del objeto de [configuración de los log](#loggerconfig-configuración-de-log).
 
-Como los códigos de colores se verían en los archivos, pudiendo quedar algo como, por ejemplo, '\x1b[31mRojo\x1b[0m', los colores estan inavilitados para los log de tipo archivo. Aunque se pase en la configuración, en el formato los parámetros de los colores se sustityen por "".
+Como los códigos de colores se verían en los archivos, pudiendo quedar algo como, por ejemplo, '\x1b[31mRojo\x1b[0m', los colores están inhabilitados para los log de tipo archivo. Aunque se pase en la configuración, en el formato los parámetros de los colores se sustituyen por "".
 
 Para TypeScript existe una interfaz que facilita la creación de un objeto de colores, ColoresLogger. La interfaz especifica 5 colores:
-- **AMARILLO** <*string*>, color amarillo, su valor se sustituye por el parametro **CM** en el formato.
-- **AZUL** <*string*>, color azul, su valor se sustituye por el parametro **CA** en el formato.
-- **ROJO** <*string*>, color rojo, su valor se sustituye por el parametro **CR** en el formato.
-- **VERDE** <*string*>, color verde, su valor se sustituye por el parametro **CV** en el formato.
-- **FINC** <*string*>, indica el fin del coloreado, su valor se sustituye por el parametro **CF** en el formato.
+- **AMARILLO** <*string*>, color amarillo, su valor se sustituye por el parámetro **CM** en el formato.
+- **AZUL** <*string*>, color azul, su valor se sustituye por el parámetro **CA** en el formato.
+- **ROJO** <*string*>, color rojo, su valor se sustituye por el parámetro **CR** en el formato.
+- **VERDE** <*string*>, color verde, su valor se sustituye por el parámetro **CV** en el formato.
+- **FINC** <*string*>, indica el fin del coloreado, su valor se sustituye por el parámetro **CF** en el formato.
 
-Cada color, no ha de corresponder necesariamente con el nombre de la propiedad, esto permite intercambiar colores sin necesidad de cambiar el formato. 
+Cada color no ha de corresponder necesariamente con el nombre de la propiedad, esto permite intercambiar colores sin necesidad de cambiar el formato. 
 
 El objeto **Colores** permite acceder a los valores por defecto
 
@@ -421,9 +421,9 @@ log.log_consola("Texto Azul", config);
 ```
 
 ### NIVELES LOG
-La libreria permite establecer un nivel minimo para mostrar los distintos tipos de registro.
+La librería permite establecer un nivel mínimo para mostrar los distintos tipos de registro.
 
-Al establecer un nivel, todos aquellos niveles inferiores no se mostrarán. Para establecer un nivel, el enum **NIVEL_LOG**, permite establecer el nivel minimo (cada nivel tiene asignado un valor numerico), también es posible establecer el nivel mediante números. 
+Al establecer un nivel, todos aquellos niveles inferiores no se mostrarán. Para establecer un nivel, el enum **NIVEL_LOG**, permite establecer el nivel mínimo (cada nivel tiene asignado un valor numérico), también es posible establecer el nivel mediante números. 
 
 | Nivel     | Valor  |
 |:---------:|:------:|
@@ -442,7 +442,7 @@ import { Logger, NIVEL_LOG } from "logger";
 const log = new Logger();
 
 log.nivel = NIVEL_LOG.ERROR;
-// Es posible tambien usar un valor numerico (NIVEL_LOG.ERROR es igual a 4)
+// Es posible también usar un valor numerico (NIVEL_LOG.ERROR es igual a 4)
 log.nivel = 4;
 ```
 
@@ -453,6 +453,6 @@ const {Logger, NIVEL_LOG } = require("logger");
 const log = new Logger();
 
 log.nivel = NIVEL_LOG.ERROR;
-// Es posible tambien usar un valor numerico (NIVEL_LOG.ERROR es igual a 4)
+// Es posible también usar un valor numerico (NIVEL_LOG.ERROR es igual a 4)
 log.nivel = 4;
 ```
