@@ -336,9 +336,8 @@ export class Logger {
      * @param error E, cualquier tipo de error
      */
     private consola<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
-        //Copia el objeto para evitar modificarlo involuntariamente, debido a que contiene otro objeto este tambien necesita ser copiado
+        //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
-        config.colores = <ColoresLogger>{ ...config.colores };
 
         //Comprueba si el nivel es mayor al nivel para registrar el log
         if (nivel < this._nivel) return; //Si el nivel es menor no registrara nada
@@ -473,9 +472,9 @@ export class Logger {
      * @param error E, cualquier tipo de error
      */
     private archivo<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
-        //Copia el objeto para evitar modificarlo involuntariamente, debido a que contiene otro objeto este tambien necesita ser copiado
+        //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
-        config.colores = <ColoresLogger>{ ...config.colores };
+        
         //Comprueba si el nivel es mayor al nivel para registrar el log
         if (nivel < this._nivel) return; //Si el nivel es menor no registrara nada
         //Guarda en variables las propiedades del objeto devuelto por obtener_datos_stack
