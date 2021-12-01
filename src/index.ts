@@ -355,13 +355,7 @@ export class Logger {
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto
-        const { colores, formato } = this.configuracion(config, tipoE, {
-            FINC: "\x1b[0m",
-            ROJO: "\x1b[31m",
-            VERDE: "\x1b[32m",
-            AMARILLO: "\x1b[33m",
-            AZUL: "\x1b[34m"
-        });
+        const { colores, formato } = this.configuracion(config, tipoE, Colores);
 
         //Renderiza la plantilla pasandole los valores que han de ser sustituidos
         //Como devuelve una funcion, la convierte a string
