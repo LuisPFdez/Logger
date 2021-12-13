@@ -7,7 +7,6 @@ export interface LoggerConfig {
     fichero?: string;
     formato?: string;
     colores?: ColoresLogger;
-
 }
 
 /**
