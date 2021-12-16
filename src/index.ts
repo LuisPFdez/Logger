@@ -1,13 +1,14 @@
 import { LoggerError } from "./lib/Error";
 import { Colores, ColoresLogger } from "./lib/ColoresLogger";
 import { LoggerConfig, LoggerConfigE, LoggerDB_Config, LoggerDB_ConfigE, Funcion_comprobar, Funcion_insertar } from "./lib/LoggerConfig";
+import {funcion_comprobar_defecto, funcion_insertar_defecto, Logger_DB } from "./lib/Logger_DB";
 
 import { resolve, join, extname, basename } from "path";
 import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
 import { R_OK, W_OK } from "constants";
 
 //Exporta las interfaces y errores para permitir ser accesibles desde el propio modulo
-export { LoggerError, ColoresLogger, LoggerConfig, Colores, LoggerDB_Config, LoggerDB_ConfigE, Funcion_comprobar, Funcion_insertar };
+export { LoggerError, ColoresLogger, LoggerConfig, Colores, LoggerDB_Config, LoggerDB_ConfigE, Funcion_comprobar, Funcion_insertar, funcion_comprobar_defecto, funcion_insertar_defecto, Logger_DB };
 
 /**
  * Enum que define el nivel del log para el registro global 

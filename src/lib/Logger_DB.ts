@@ -1,7 +1,7 @@
 import { LoggerError } from "./Error";
 import { ColoresLogger } from "./ColoresLogger";
 import { formato_defecto, formato_error_defecto, Logger, NIVEL_LOG } from "../index";
-import { Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE } from "./LoggerConfig";
+import { Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, } from "./LoggerConfig";
 
 // Funciones por defecto
 /** Funcion vacia, para comprobar la conexion por defecto, siempre devuelve true */
@@ -23,8 +23,8 @@ export class Logger_DB<T> extends Logger {
     /**
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config_conexion T, configuracion para la acceder a la base de datos, por defecto un objeto vacio
-     * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
+     * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param fichero string, nombre, del fichero, por defecto logger.log
      * @param ruta lugar donde se guarda el archivo, por defecto es el directorio raiz
      * @param nivel, NIVEL_LOG, nivel del log permitido para mostrarse, por defecto todos
@@ -34,14 +34,14 @@ export class Logger_DB<T> extends Logger {
      * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
      */
-    constructor(config_conexion: T = <T>{}, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto,
+    constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
         fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
         //Pasa los parametros comunes con la clase padre a esta.
         super(fichero, ruta, nivel, formato, formato_error);
         //Parametros propios de la clase
         this._config_conexion = config_conexion;
-        this._funcion_comprobar_conexion = funcion_comprobar_conexion;
         this._funcion_insertar_log = funcion_insertar_log;
+        this._funcion_comprobar_conexion = funcion_comprobar_conexion;
         //Aunque la propieda de regex es comun, el constructor de Logger no lo acepta por parametro
         this._exp_logger = new RegExp("");
     }
@@ -50,8 +50,8 @@ export class Logger_DB<T> extends Logger {
      * Crea una Instancia de Logger_DB, comprobando antes si conecta a la base de datos. Mediante la funcion comprobar_conexion
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config_conexion T, configuracion para la acceder a la base de datos, por defecto un objeto vacio
-     * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos, por defecto una funcion vacia
+     * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param fichero string, nombre, del fichero, por defecto logger.log
      * @param ruta lugar donde se guarda el archivo, por defecto es el directorio raiz
      * @param nivel, NIVEL_LOG, nivel del log permitido para mostrarse, por defecto todos
@@ -62,12 +62,14 @@ export class Logger_DB<T> extends Logger {
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
      * @returns Logger_DB<T>, instancia de la clase. En caso de fallar la comprobacion lanza un error
      */
-    async Clase(config_conexion: T = <T>{}, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto,
+    static async InstanciarClase<T>(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
         fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto): Promise<Logger_DB<T>> {
+        //Crea una instancia de la clase
+        const logger = new Logger_DB<T>(config_conexion, funcion_insertar_log, funcion_comprobar_conexion, fichero, ruta, nivel, formato, formato_error);
         //Comprueba la conexion a la base de datos a traves de la funcion pasada
-        this.comprobar_conexion(config_conexion, this._funcion_comprobar_conexion);
-        //Devuelve una instancia de la clase
-        return new Logger_DB(config_conexion, funcion_comprobar_conexion, funcion_insertar_log, fichero, ruta, nivel, formato, formato_error);
+        await logger.comprobar_conexion(config_conexion, funcion_comprobar_conexion);
+        //Devuelve la instancia de la clase
+        return logger;
     }
 
     // Getter y Setter de las propiedades
@@ -144,8 +146,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo
+     * Guarda un mensaje de log en la base de datos
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param nivel, nivel necesario para registrar el log
      * @param tipo string, tipo del mensaje 
      * @param msg string, mensaje del log
@@ -200,8 +203,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo LOG
+     * Guarda un mensaje de log en la base de datos del Tipo LOG
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
@@ -214,8 +218,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo INFO
+     * Guarda un mensaje de log en la base de datos del Tipo INFO
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
@@ -228,8 +233,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo AVISO
+     * Guarda un mensaje de log en la base de datos del Tipo AVISO
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
@@ -242,8 +248,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo ERROR 
+     * Guarda un mensaje de log en la base de datos del Tipo ERROR 
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
@@ -256,8 +263,9 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Guarda un mensaje de log en el archivo del Tipo FATAL
+     * Guarda un mensaje de log en la base de datos del Tipo FATAL
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam T - Tipo de la configuración para la conexion
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
