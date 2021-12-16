@@ -1,6 +1,6 @@
 import { LoggerError } from "./Error";
 import { ColoresLogger } from "./ColoresLogger";
-import { formato_defecto, formato_error_defecto, Logger, NIVEL_LOG } from "../index";
+import { formato_defecto, formato_error_defecto, Logger, NIVEL_LOG } from "./Logger";
 import { Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, } from "./LoggerConfig";
 
 // Funciones por defecto
