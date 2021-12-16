@@ -1,13 +1,13 @@
 import { LoggerError } from "./lib/Error";
 import { Colores, ColoresLogger } from "./lib/ColoresLogger";
-import { LoggerConfig, LoggerConfigE } from "./lib/LoggerConfig";
+import { LoggerConfig, LoggerConfigE, LoggerDB_Config, LoggerDB_ConfigE, Funcion_comprobar, Funcion_insertar } from "./lib/LoggerConfig";
 
 import { resolve, join, extname, basename } from "path";
 import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
 import { R_OK, W_OK } from "constants";
 
 //Exporta las interfaces y errores para permitir ser accesibles desde el propio modulo
-export { LoggerError, ColoresLogger, LoggerConfig, Colores };
+export { LoggerError, ColoresLogger, LoggerConfig, Colores, LoggerDB_Config, LoggerDB_ConfigE, Funcion_comprobar, Funcion_insertar };
 
 /**
  * Enum que define el nivel del log para el registro global 
@@ -291,7 +291,10 @@ export class Logger {
     }
 
     /**
-     * 
+     * Comprueba si un fichero existe dentro de la ruta. Lanza una excepcion en caso de algun error. 
+     * Si el fichero no existe omite las comprobaciones. Si existe comprueba tener permisos de escritura y
+     * de lectura. Ademas de comprobar de que la extension sea log (evita la sobreescritura de ciertos ficheros).
+     * En caso de no cumplirse alguna de las condiciones lanza una excepcion
      * @param fichero string, nombre del fichero con su extension
      * @returns string, ruta absoluta del fichero
      */
