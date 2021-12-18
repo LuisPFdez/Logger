@@ -1,7 +1,7 @@
 import { LoggerError } from "./Error";
 import { ColoresLogger } from "./ColoresLogger";
 import { formato_defecto, formato_error_defecto, Logger, NIVEL_LOG } from "./Logger";
-import { Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, } from "./LoggerConfig";
+import { datosLog, Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, } from "./LoggerConfig";
 
 // Funciones por defecto
 /** Funcion vacia, para comprobar la conexion por defecto, siempre devuelve true */
@@ -184,10 +184,7 @@ export class Logger_DB<T> extends Logger {
             AMARILLO: "",
             AZUL: ""
         });
-
-        //Renderiza la plantilla pasandole los valores que han de ser sustituidos
-        //Como devuelve una funcion, la convierte a string
-        const plantilla = (formato.compilarPlantilla({
+        const datos: datosLog = {
             tipo: tipo,
             mensaje: msg,
             linea: linea,
@@ -196,10 +193,13 @@ export class Logger_DB<T> extends Logger {
             archivo: archivo,
             Color: colores,
             funcion: funcion
-        })).toString();
+        };
+        //Renderiza la plantilla pasandole los valores que han de ser sustituidos
+        //Como devuelve una funcion, la convierte a string
+        const plantilla = (formato.compilarPlantilla( datos )).toString();
 
         //Ejecuta la funcion para realizar la carga del log
-        function_insertar(plantilla, config_conexion);
+        function_insertar(plantilla, config_conexion, datos);
     }
 
     /**
