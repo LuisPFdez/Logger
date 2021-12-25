@@ -42,8 +42,6 @@ export class Logger_DB<T> extends Logger {
         this._config_conexion = config_conexion;
         this._funcion_insertar_log = funcion_insertar_log;
         this._funcion_comprobar_conexion = funcion_comprobar_conexion;
-        //Aunque la propieda de regex es comun, el constructor de Logger no lo acepta por parametro
-        this._exp_logger = new RegExp("");
     }
 
     /**
