@@ -10,15 +10,15 @@ export const funcion_comprobar_defecto = async () => true;
 export const funcion_insertar_defecto = async () => { return };
 
 /**
- * Clase que permite
+ * Clase que permite registrar log en base de datos.
  * @typeParam T, Tipo de la configuración para la conexion
  * @extends Logger
  */
 export class Logger_DB<T> extends Logger {
 
     protected _config_conexion: T = <T>{};
-    protected _funcion_comprobar_conexion: Funcion_comprobar<T>;
     protected _funcion_insertar_log: Funcion_insertar<T>;
+    protected _funcion_comprobar_conexion: Funcion_comprobar<T>;
 
     /**
      * @typeParam T, Tipo de la configuración para la conexion
