@@ -135,10 +135,10 @@ export class Logger_DB<T> extends Logger {
         return {
             //Expande la configuracion del metodo de configuracion
             ...configuracion,
-            //Comprueba si la configuración es valida de la conexion es valida
-            config_conexion: config.config_conexion ? await this.comprobar_conexion(config.config_conexion) : this.config_conexion,
+            //Comprueba si la configuración es valida de la conexion es valida. En funcion de lo que se le pase
+            config_conexion: config.config_conexion ? await this.comprobar_conexion(config.config_conexion, config.funcion_comprobar || this.funcion_comprobar_conexion) : this.config_conexion,
             //Asigna la funcion para insertar la conexion
-            function_insertar: config.function_insertar || this.funcion_insertar_log
+            funcion_insertar: config.funcion_insertar || this.funcion_insertar_log
         };
 
     }
@@ -175,7 +175,7 @@ export class Logger_DB<T> extends Logger {
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
-        const { colores, formato, function_insertar, config_conexion } = await this.configuracion_Async(config, tipoE, {
+        const { colores, formato, funcion_insertar, config_conexion } = await this.configuracion_Async(config, tipoE, {
             FINC: "",
             ROJO: "",
             VERDE: "",
@@ -197,7 +197,7 @@ export class Logger_DB<T> extends Logger {
         const plantilla = (formato.compilarPlantilla( datos )).toString();
 
         //Ejecuta la funcion para realizar la carga del log
-        function_insertar(plantilla, config_conexion, datos);
+        funcion_insertar(plantilla, config_conexion, datos);
     }
 
     /**

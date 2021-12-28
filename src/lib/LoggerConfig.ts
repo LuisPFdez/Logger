@@ -25,7 +25,8 @@ export interface LoggerConfigE {
  */
 export interface LoggerDB_Config<T> extends LoggerConfig {
     config_conexion?: T;
-    function_insertar?: Funcion_insertar<T>;
+    funcion_insertar?: Funcion_insertar<T>;
+    funcion_comprobar?: Funcion_comprobar<T>;
 }
 
 /**
@@ -34,7 +35,7 @@ export interface LoggerDB_Config<T> extends LoggerConfig {
  */
 export interface LoggerDB_ConfigE<T> extends LoggerConfigE {
     config_conexion: T;
-    function_insertar: Funcion_insertar<T>;
+    funcion_insertar: Funcion_insertar<T>;
 }
 
 /** Tipo para las funciones de comprobacion de Logger*/
