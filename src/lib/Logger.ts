@@ -53,8 +53,12 @@ String.prototype.compilarPlantilla = function (this: string, args: Record<string
 /**
  * Expresion regular por defecto para comprobar la prodecencia de logger
  */
-const exp_logger = /at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo)|(base_datos))/;
+export const exp_logger = /at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo)|(base_datos))/;
 
+/**
+ * Expresion regular para 
+ */
+export const exp_logger_generico = /at Logger\.[$A-Z_][0-9A-Z_$]*/;
 /**
  * Clase para el manejo del sistema de logs
  */
@@ -94,7 +98,7 @@ export class Logger {
      * %{CM} - Pinta de color amarillo (Consola),
      * %{CF} - Marca el fin de coloreado
      */
-    constructor(fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
+    public constructor(fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
         this._ruta = this.comprobar_ruta(ruta);
         this._fichero = this.comprobar_fichero(fichero);
         this._formato = this.formatear(formato);
@@ -104,48 +108,48 @@ export class Logger {
     }
 
     // Getter y Setter de las propiedades
-    get ruta(): string {
+    public get ruta(): string {
         return this._ruta;
     }
 
-    set ruta(ruta: string) {
+    public set ruta(ruta: string) {
         this._ruta = this.comprobar_ruta(ruta);
         this._fichero = this.comprobar_fichero(basename(this._fichero));
     }
 
-    get fichero(): string {
+    public get fichero(): string {
         return this._fichero;
     }
 
-    set fichero(fichero: string) {
+    public set fichero(fichero: string) {
         this._fichero = this.comprobar_fichero(fichero);
     }
 
-    get formato(): string {
+    public get formato(): string {
         return this._formato;
     }
 
-    set formato(formato: string) {
+    public set formato(formato: string) {
         this._formato = this.formatear(formato);
     }
 
-    get formato_error(): string {
+    public get formato_error(): string {
         return this._formato_error;
     }
 
-    set formato_error(formato_error: string) {
+    public set formato_error(formato_error: string) {
         this._formato_error = this.formatear(formato_error);
     }
 
-    get nivel(): NIVEL_LOG {
+    public get nivel(): NIVEL_LOG {
         return this._nivel;
     }
 
-    set nivel(nivel: NIVEL_LOG) {
+    public set nivel(nivel: NIVEL_LOG) {
         this._nivel = nivel;
     }
 
-    get exp_logger(): RegExp {
+    public get exp_logger(): RegExp {
         return this._exp_logger;
     }
 
@@ -390,7 +394,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    log_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public log_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
@@ -404,7 +408,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    info_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public info_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
         this.consola(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
@@ -419,7 +423,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    aviso_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public aviso_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
         this.consola(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
@@ -434,7 +438,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    error_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public error_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
@@ -448,7 +452,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    fatal_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public fatal_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 
@@ -515,7 +519,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    log_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public log_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
@@ -526,10 +530,10 @@ export class Logger {
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @remarks 
-     * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
+     * El parametro error, se us a para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    info_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public info_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
 
@@ -543,7 +547,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    aviso_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public aviso_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
@@ -557,7 +561,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    error_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public error_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
@@ -571,7 +575,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    fatal_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public fatal_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 }

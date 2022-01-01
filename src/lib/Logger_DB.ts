@@ -34,7 +34,7 @@ export class Logger_DB<T> extends Logger {
      * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
      */
-    constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
+    protected constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
         fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
         //Pasa los parametros comunes con la clase padre a esta.
         super(fichero, ruta, nivel, formato, formato_error);
@@ -60,7 +60,7 @@ export class Logger_DB<T> extends Logger {
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
      * @returns Logger_DB<T>, instancia de la clase. En caso de fallar la comprobacion lanza un error
      */
-    static async InstanciarClase<T>(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
+    public static async InstanciarClase<T>(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
         fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto): Promise<Logger_DB<T>> {
         //Crea una instancia de la clase
         const logger = new Logger_DB<T>(config_conexion, funcion_insertar_log, funcion_comprobar_conexion, fichero, ruta, nivel, formato, formato_error);
@@ -71,23 +71,23 @@ export class Logger_DB<T> extends Logger {
     }
 
     // Getter y Setter de las propiedades
-    get config_conexion(): T {
+    public get config_conexion(): T {
         return this._config_conexion;
     }
 
-    get funcion_comprobar_conexion(): Funcion_comprobar<T> {
+    public get funcion_comprobar_conexion(): Funcion_comprobar<T> {
         return this._funcion_comprobar_conexion;
     }
 
-    set funcion_comprobar_conexion(funcion_comprobar_conexion: Funcion_comprobar<T>) {
+    public set funcion_comprobar_conexion(funcion_comprobar_conexion: Funcion_comprobar<T>) {
         this._funcion_comprobar_conexion = funcion_comprobar_conexion;
     }
 
-    get funcion_insertar_log(): Funcion_insertar<T> {
+    public get funcion_insertar_log(): Funcion_insertar<T> {
         return this._funcion_insertar_log;
     }
 
-    set funcion_insertar_log(funcion_insertar_log: Funcion_insertar<T>) {
+    public set funcion_insertar_log(funcion_insertar_log: Funcion_insertar<T>) {
         this._funcion_insertar_log = funcion_insertar_log;
     }
 
@@ -115,7 +115,7 @@ export class Logger_DB<T> extends Logger {
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config_conexion T, configuración para la conexion
      */
-    async establecerConfigConexion(config_conexion: T): Promise<void> {
+    public async establecerConfigConexion(config_conexion: T): Promise<void> {
         //Comprueba si es posible establecer la conexion antes de cambiar el valor de la propiedad
         this._config_conexion = await this.comprobar_conexion(config_conexion);
     }
@@ -194,7 +194,7 @@ export class Logger_DB<T> extends Logger {
         };
         //Renderiza la plantilla pasandole los valores que han de ser sustituidos
         //Como devuelve una funcion, la convierte a string
-        const plantilla = (formato.compilarPlantilla( datos )).toString();
+        const plantilla = (formato.compilarPlantilla(datos)).toString();
 
         //Ejecuta la funcion para realizar la carga del log
         funcion_insertar(plantilla, config_conexion, datos);
@@ -211,7 +211,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    log_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public log_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
@@ -226,7 +226,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    info_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public info_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
 
@@ -241,7 +241,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    aviso_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public aviso_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
@@ -256,7 +256,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    error_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public error_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
@@ -271,7 +271,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    fatal_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public fatal_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 
