@@ -55,4 +55,4 @@ export type datosLog = {
     archivo: string;
     Color: ColoresLogger;
     funcion: string;
-};  
+};
