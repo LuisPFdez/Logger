@@ -2,7 +2,7 @@ import { LoggerError } from "./Error";
 import { Colores, ColoresLogger } from "./ColoresLogger";
 import { LoggerConfig, LoggerConfigE } from "./LoggerConfig";
 
-import { resolve, join, extname, basename } from "path";
+import { resolve, extname, basename } from "path";
 import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
 import { R_OK, W_OK } from "constants";
 
@@ -276,7 +276,7 @@ export class Logger {
      */
     protected comprobar_ruta(ruta: string): string {
         //Obtiene la ruta absoluta en caso de ser relativa
-        ruta = join(resolve(ruta));
+        ruta = resolve(ruta);
 
         //Comprueba si la ruta no existe o no es un directorio, en caso de ser cierto uno de los dos, lanza un error
         if (!existsSync(ruta) || !lstatSync(ruta).isDirectory()) {
@@ -307,7 +307,7 @@ export class Logger {
         fichero = basename(fichero);
 
         //Obtiene la ruta absoluta del fichero a traves de la variable ruta
-        fichero = join(resolve(this._ruta, fichero));
+        fichero = resolve(this._ruta, fichero);
 
         //Comprueba si ese fichero, o ruta existe
         if (existsSync(fichero)) {
