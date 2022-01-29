@@ -33,11 +33,12 @@ export class Logger_DB<T> extends Logger {
      * @param config_conexion T, configuracion para la acceder a la base de datos, por defecto un objeto vacio
      * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
+     * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
      */
     protected constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
-        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
+        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8" ) {
         //Pasa los parametros comunes con la clase padre a esta.
-        super(fichero, ruta, nivel, formato, formato_error);
+        super(fichero, ruta, nivel, formato, formato_error, codificacion);
         //Parametros propios de la clase
         this._config_conexion = config_conexion;
         this._funcion_insertar_log = funcion_insertar_log;
@@ -58,12 +59,13 @@ export class Logger_DB<T> extends Logger {
      * @param config_conexion T, configuracion para la acceder a la base de datos, por defecto un objeto vacio
      * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
+     * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
      * @returns Logger_DB<T>, instancia de la clase. En caso de fallar la comprobacion lanza un error
      */
     public static async InstanciarClase<T>(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
-        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto): Promise<Logger_DB<T>> {
+        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8"): Promise<Logger_DB<T>> {
         //Crea una instancia de la clase
-        const logger = new Logger_DB<T>(config_conexion, funcion_insertar_log, funcion_comprobar_conexion, fichero, ruta, nivel, formato, formato_error);
+        const logger = new Logger_DB<T>(config_conexion, funcion_insertar_log, funcion_comprobar_conexion, fichero, ruta, nivel, formato, formato_error, codificacion);
         //Comprueba la conexion a la base de datos a traves de la funcion pasada
         await logger.comprobar_conexion(config_conexion, funcion_comprobar_conexion);
         //Devuelve la instancia de la clase

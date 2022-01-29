@@ -70,6 +70,7 @@ export class Logger {
     protected _formato_error: string;
     protected _nivel: NIVEL_LOG;
     protected _exp_logger: RegExp;
+    protected _codificacion: BufferEncoding;
 
     /**
      * @param fichero string, nombre, del fichero, por defecto logger.log
@@ -77,6 +78,7 @@ export class Logger {
      * @param nivel, NIVEL_LOG, nivel del log permitido para mostrarse, por defecto todos
      * @param formato string, formato normal, tiene un valor por defecto
      * @param formato_error string, formato para cuando se lanza un error, tiene un valor por defecto
+     * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
      * @remarks 
      * El formato permite caracteres especiales, que seran sustituidos por informacion
      * %{s} - Muestra los segundos,
@@ -98,13 +100,14 @@ export class Logger {
      * %{CM} - Pinta de color amarillo (Consola),
      * %{CF} - Marca el fin de coloreado
      */
-    public constructor(fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto) {
+    public constructor(fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8") {
         this._ruta = this.comprobar_ruta(ruta);
         this._fichero = this.comprobar_fichero(fichero);
         this._formato = this.formatear(formato);
         this._formato_error = this.formatear(formato_error);
         this._nivel = nivel;
         this._exp_logger = new RegExp(exp_logger);
+        this._codificacion = codificacion;
     }
 
     // Getter y Setter de las propiedades
@@ -151,6 +154,14 @@ export class Logger {
 
     public get exp_logger(): RegExp {
         return this._exp_logger;
+    }
+
+    public set codificacion(codificacion: BufferEncoding) {
+        this._codificacion = codificacion;
+    }
+
+    public get codificacion(): BufferEncoding {
+        return this._codificacion;
     }
 
     /**
@@ -265,7 +276,9 @@ export class Logger {
             //Asigna la constante formato
             formato: formato,
             //Si config no tiene declarado colores asigna el objeto colores pasado por parametro
-            colores: config.colores || colores
+            colores: config.colores || colores,
+            //Devuelve al codificacion especificada
+            codificacion: config.codificacion || this._codificacion
         };
     }
 
@@ -484,7 +497,7 @@ export class Logger {
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
-        const { fichero, colores, formato } = this.configuracion(config, tipoE, {
+        const { fichero, colores, formato, codificacion } = this.configuracion(config, tipoE, {
             FINC: "",
             ROJO: "",
             VERDE: "",
@@ -506,7 +519,7 @@ export class Logger {
         })).toString();
 
         //Añade al final del archivo el mensaje
-        appendFileSync(fichero, plantilla + "\n");
+        appendFileSync(fichero, plantilla + "\n", { encoding: codificacion });
     }
 
     /**

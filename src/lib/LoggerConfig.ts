@@ -7,6 +7,7 @@ export interface LoggerConfig {
     fichero?: string;
     formato?: string;
     colores?: ColoresLogger;
+    codificacion?: BufferEncoding;
 }
 
 /**
@@ -17,6 +18,7 @@ export interface LoggerConfigE {
     fichero: string;
     formato: string;
     colores: ColoresLogger;
+    codificacion: BufferEncoding;
 }
 
 /**
