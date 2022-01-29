@@ -107,7 +107,7 @@ export class Logger {
         this._formato_error = this.formatear(formato_error);
         this._nivel = nivel;
         this._exp_logger = new RegExp(exp_logger);
-        this._codificacion = codificacion;
+        this._codificacion = this.comprobar_codificacion(codificacion);
     }
 
     // Getter y Setter de las propiedades
@@ -157,7 +157,7 @@ export class Logger {
     }
 
     public set codificacion(codificacion: BufferEncoding) {
-        this._codificacion = codificacion;
+        this._codificacion = this.comprobar_codificacion(codificacion);
     }
 
     public get codificacion(): BufferEncoding {
@@ -245,13 +245,28 @@ export class Logger {
      * Metodo para comprobar el tipo de error.
      * @typeParam E - Tipo que desciende de error 
      * @param error E, error  
-     * @returns 
+     * @returns boolean, si el error ha sido lanzado desde la clase o no
      */
     protected comprobar_tipo_error<E extends Error>(error: E): boolean {
         //Comprueba si el stack del error es undefined, en ese caso devolverá un true
         if (error.stack == undefined) return true;
         //Comprueba si el error es una instancia (directa) de Error y si el error proviene de un metodo de la clase logger
         return error.constructor.name == "Error" && this._exp_logger.test(error.stack);
+    }
+
+    /**
+     * Comprueba si el string es valido como tipo de codificacion. En caso de no serlo lanzara una excepcion
+     * @param codificacion string, tipo de codificacion
+     * @returns BufferEncoding, 
+     */
+    protected comprobar_codificacion(codificacion: string): BufferEncoding{
+        //Comprueba si no es valido
+        if ( !Buffer.isEncoding(codificacion) ){
+            //En caso de no ser valido lanza la excepcion
+            throw new LoggerError("La codificación "+codificacion+" no es válida");
+        }
+        //Devuelve la codificacion
+        return codificacion;
     }
 
     /**
@@ -278,7 +293,7 @@ export class Logger {
             //Si config no tiene declarado colores asigna el objeto colores pasado por parametro
             colores: config.colores || colores,
             //Devuelve al codificacion especificada
-            codificacion: config.codificacion || this._codificacion
+            codificacion: config.codificacion ? this.comprobar_codificacion(config.codificacion) : this._codificacion
         };
     }
 
@@ -372,9 +387,10 @@ export class Logger {
         //distinto de Error, valor por defecto
         const tipoE = this.comprobar_tipo_error(error);
 
-        //Elimina la propiedad de fichero del objeto de configuracion para evitar, en caso de tener algun valor, hacer
+        //Elimina la propiedad de fichero y codificacion del objeto de configuracion para evitar, en caso de tener algun valor, hacer
         //las comprobaciones de la configuracion
         delete config.fichero;
+        delete config.codificacion;
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto

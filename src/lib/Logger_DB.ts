@@ -171,9 +171,10 @@ export class Logger_DB<T> extends Logger {
 
         //Elimnia la propiedad de colores para evitar, que se establezcan y aparezcan en el archivo
         delete config.colores;
-        //Elimina la propiedad de fichero del objeto de configuracion para evitar, en caso de tener algun valor, hacer
+        //Elimina la propiedad de fichero y codificion del objeto de configuracion para evitar, en caso de tener algun valor, hacer
         //las comprobaciones de la configuracion
         delete config.fichero;
+        delete config.codificacion;
 
         //Filtra la configuracion, le pasa el parametro de config, que tipo de formato ha de ser
         //y la paleta de colores por defecto, al ser un archivo los colores son vacios
