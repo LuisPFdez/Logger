@@ -313,6 +313,7 @@ LoggerConfig posee tres propiedades, todas opcionales:
 - **colores** <*ColoresLogger*>, permite establecer una paleta de colores personalizada. No es posible modificar la paleta de los [log de archivo](#colores). 
 - **fichero** <*string*>, permite establecer un fichero específico para el log (la ruta será la misma que la de la clase). **Esta propiedad solo afecta a los log de archivo**
 - **formato** <*string*>, permite establecer un formato específico para el registro, independientemente de los formatos por defecto.
+- **codificacion** <*BufferEncoding*>. **Esta propiedad solo afecta a los log de archivo**. Establece la codificación con la que se escribirá el log en el archivo. Por defecto *UTF-8*
 
 TypeScript
 ```TS
@@ -459,22 +460,22 @@ log.nivel = 4;
 
 ## Clase Logger_DB
 
-Clase que extiende a [Logger](#clase-logger). Permitiendo usar los metodos de Logger junto a los específicos de *Logger_DB*. 
+Clase que extiende a [Logger](#clase-logger). Permitiendo usar los métodos de Logger junto a los específicos de *Logger_DB*. 
 
-*Logger_DB* establece metodos genericos para guardar los registros en bases de datos a traves de **callbacks**.
+*Logger_DB* establece métodos genéricos para guardar los registros en bases de datos a través de **callbacks**.
 
 ### Constructor Logger_DB
 Logger_DB recibe tres parámetros. Todos son opcionales. 
 
-1. **config_conexion** <*T*>, configuracion para establecer la conexion. En TypeScript el tipo de este se establece con el tipo generico. 
-2. **funcion_insertar_log** <*Funcion_insertar&lt;T&gt;*>, funcion para insertar el log en la base de datos. Por defecto es una funcion vacia.
-3. **funcion_comprobar_conexion** <*Funcion_comprobar&lt;T&gt;*>, permite comprobar la conexion. Se ejecuta al cambiar la configuración de conexion, si la funcion devuelve **false** (se supone que por que la conexion ha fallado), se lanza una excepcion. La funcion por defecto devuelve siempre true. 
+1. **config_conexion** <*T*>, configuración para establecer la conexión. En TypeScript el tipo de este se establece con el tipo genérico. 
+2. **funcion_insertar_log** <*Funcion_insertar&lt;T&gt;*>, función para insertar el log en la base de datos. Por defecto es una función vacía.
+3. **funcion_comprobar_conexion** <*Funcion_comprobar&lt;T&gt;*>, permite comprobar la conexión. Se ejecuta al cambiar la configuración de conexión, si la función devuelve **false** (se supone que porque la conexión ha fallado), se lanza una excepción. La función por defecto devuelve siempre true. 
 
-El constructor admite los tambien los metodos de [Logger](#constructor). 
+El constructor admite también los métodos de [Logger](#constructor). 
 
-Para crear una instancia de la clase, no es posible usar el constuctor. Logger_DB ofrece un metodo estatico, que hace una comprobación de la conexion, mediante la función para comprobar la conexion.
+Para crear una instancia de la clase, no es posible usar el constructor. Logger_DB ofrece un método estático, que hace una comprobación de la conexión, mediante la función para verificar la conexión.
 
-El metodo estatico **InstanciarClase**, devuelve una instancia de clase. Es un metodo asincrono
+El método estático **InstanciarClase**, devuelve una instancia de clase. Es un método asíncrono
 
 ```TS
 import { Funcion_comprobar, Funcion_insertar, Logger_DB } from "logger";
@@ -487,10 +488,10 @@ const config = {
     user: "USUARIO"
 }
 
-const comprobarConexion: Funcion_comprobar<ConnectionConfig> = async (config) => {
-    //Crea la conexion
+const comprobarconexion: Funcion_comprobar<ConnectionConfig> = async (config) => {
+    //Crea la conexión
     const con = createConnection(config);
-    //Intenta establecer la conexion.
+    //Intenta establecer la conexión.
     con.connect((err) => {
         if (err) {
             //En caso de haber un error devuelve un error
@@ -498,16 +499,16 @@ const comprobarConexion: Funcion_comprobar<ConnectionConfig> = async (config) =>
         }
     });
 
-    //Destruye la conexion
+    //Destruye la conexión
     con.destroy();
-    //Devuelve la conexion
+    //Devuelve la conexión
     return true;
 }
 
 const insertarQuery: Funcion_insertar<ConnectionConfig> = async (quer, config) => {
-    //Crea la conexion
+    //Crea la conexión
     const con = createConnection(config);
-    //Inicia la conexion con la base de datos
+    //Inicia la conexión con la base de datos
     con.connect();
 
     //Ejecuta la query para insertar el log
@@ -520,15 +521,15 @@ const insertarQuery: Funcion_insertar<ConnectionConfig> = async (quer, config) =
         //En caso de una ejecucion correcta muestra un mensaje en la consola
         console.log("Consulta ejecutada con éxito:", fias);
     });
-    //Finaliza la conexion
+    //Finaliza la conexión
     con.end();
 }
 
-//Funcion asincrona main
+//Función asíncrona main
 async function main() {
     try {
-        //Instancia la clase con el metodo generico
-        const log = await Logger_DB.InstanciarClase<ConnectionConfig>(config, insertarQuery, comprobarConexion);
+        //Instancia la clase con el método genérico
+        const log = await Logger_DB.InstanciarClase<ConnectionConfig>(config, insertarQuery, comprobarconexion);
 
         //Los niveles de log funciona. Su funcionamiento es igual que Logger-TS
         log.log_base_datos("Log en base de datos 1")
@@ -555,10 +556,10 @@ const config = {
     user: "USUARIO"
 }
 
-const comprobarConexion = async (config) => {
-    //Crea la conexion
+const comprobarconexion = async (config) => {
+    //Crea la conexión
     const con = createConnection(config);
-    //Intenta establecer la conexion.
+    //Intenta establecer la conexión.
     con.connect((err) => {
         if (err) {
             //En caso de haber un error devuelve un error
@@ -566,16 +567,16 @@ const comprobarConexion = async (config) => {
         }
     });
 
-    //Destruye la conexion
+    //Destruye la conexión
     con.destroy();
-    //Devuelve la conexion
+    //Devuelve la conexión
     return true;
 }
 
 const insertarQuery = async (quer, config) => {
-    //Crea la conexion
+    //Crea la conexión
     const con = createConnection(config);
-    //Inicia la conexion con la base de datos
+    //Inicia la conexión con la base de datos
     con.connect();
 
     //Ejecuta la query para insertar el log
@@ -588,15 +589,15 @@ const insertarQuery = async (quer, config) => {
         //En caso de una ejecucion correcta muestra un mensaje en la consola
         console.log("Consulta ejecutada con éxito:", fias);
     });
-    //Finaliza la conexion
+    //Finaliza la conexión
     con.end();
 }
 
-//Funcion asincrona main
+//Función asíncrona main
 async function main() {
     try {
-        //Instancia la clase con el metodo generico
-        const log = await Logger_DB.InstanciarClase(config, insertarQuery, comprobarConexion);
+        //Instancia la clase con el método genérico
+        const log = await Logger_DB.InstanciarClase(config, insertarQuery, comprobarconexion);
 
         //Los niveles de log funciona. Su funcionamiento es igual que Logger-TS
         log.log_base_datos("Log en base de datos 1")
@@ -612,19 +613,19 @@ async function main() {
 main();
 ```
 
-### Tipo Generico T
-Permite establecer el tipo de la configuracion para la conexión (en TypeScript). El tipo generico determina el tipo de configuración de la conexion para la instancia.
+### Tipo Genérico T
+Permite establecer el tipo de la configuración para la conexión (en TypeScript). El tipo genérico determina el tipo de configuración de la conexión para la instancia.
 ```TS
-const log = await Logger_DB.InstanciarClase<ConnectionConfig>(config, insertarQuery, comprobarConexion);
+const log = await Logger_DB.InstanciarClase<ConnectionConfig>(config, insertarQuery, comprobarconexion);
 ```
 
-&lt;ConnectionConfig&gt; define el tipo de configuracion de la instancia para acceder a la base de datos. En este caso, el tipo sera la interfaz de configurion de mysql *ConnectionConfig*
+&lt;ConnectionConfig&gt; define el tipo de configuración de la instancia para acceder a la base de datos. En este caso, el tipo será la interfaz de configuración de mysql *ConnectionConfig*
 
 ### LoggerDB_Config&lt;T&gt;
 Extiende de [Logger_Config](#loggerconfig-configuración-de-log). 
-Permite declarar la configuracion y funciones para la conexion de la base de datos.
+Permite declarar la configuración y funciones para la conexión de la base de datos.
 
 LoggerDB_Config&lt;T&gt; posee tres propiedades, todas son opcionales:
-- **config_conexion** <*T*>, permite sustituir la configuracion para la conexion. 
-- **funcion_insertar** <*Funcion_insertar&lt;T&gt;*>, permite cambiar la funcion para insertar en la base de datos.
-- **funcion_comprobar** <*Funcion_comprobar&lt;T&gt;*>, permite cambiar la funcion para comprobar la conexion (La funcion se ejecuta al cambiar la funcion de insertar, en caso de solo cambiar funcion de comprobar esta no se utulizara).
+- **config_conexion** <*T*>, permite sustituir la configuración para la conexión. 
+- **funcion_insertar** <*Funcion_insertar&lt;T&gt;*>, permite cambiar la función para insertar en la base de datos.
+- **funcion_comprobar** <*Funcion_comprobar&lt;T&gt;*>, permite cambiar la función para comprobar la conexión (La función se ejecuta al cambiar la función de insertar, en caso de solo cambiar función de comprobar esta no se utilizará).
