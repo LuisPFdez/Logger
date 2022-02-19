@@ -48,13 +48,11 @@ export type Funcion_insertar<T> = (log: string, config: T, datos: datosLog) => P
 
 /** Tipo de objeto con los datos sobre el registro  */
 export type datosLog = {
-    // [key: string]: unknown;
     tipo: string;
     mensaje: string;
     linea: string;
     nombre_error: string;
     mensaje_error: string;
     archivo: string;
-    Color: ColoresLogger;
     funcion: string;
 };

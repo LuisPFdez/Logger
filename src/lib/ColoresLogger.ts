@@ -9,6 +9,9 @@ export interface ColoresLogger {
     AZUL: string;
 }
 
+/**
+ *  Objeto los colores por defecto
+ */
 export const Colores: ColoresLogger = {
     FINC: "\x1b[0m",
     ROJO: "\x1b[31m",

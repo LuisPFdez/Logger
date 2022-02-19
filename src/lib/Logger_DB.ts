@@ -192,12 +192,11 @@ export class Logger_DB<T> extends Logger {
             nombre_error: nombre_error,
             mensaje_error: mensaje_error,
             archivo: archivo,
-            Color: colores,
             funcion: funcion
         };
         //Renderiza la plantilla pasandole los valores que han de ser sustituidos
         //Como devuelve una funcion, la convierte a string
-        const plantilla = (formato.compilarPlantilla(datos)).toString();
+        const plantilla = (formato.compilarPlantilla({... datos, Color: colores})).toString();
 
         //Ejecuta la funcion para realizar la carga del log
         funcion_insertar(plantilla, config_conexion, datos);
