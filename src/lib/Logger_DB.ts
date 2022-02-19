@@ -104,7 +104,7 @@ export class Logger_DB<T> extends Logger {
         //Si conexion es undefined se le asgina el valor de funcion_comprobar_conexion
         conexion = conexion || this._funcion_comprobar_conexion;
         //Comprueba si se ejecuta la funcion
-        if (!await conexion.call(this, config)) {
+        if (!await conexion(config, this)) {
             //En caso de devolver false lanza un error
             throw new LoggerError("Fallo al conectar con la base de datos");
         }
@@ -200,7 +200,7 @@ export class Logger_DB<T> extends Logger {
 
         //Ejecuta la funcion para realizar la carga del log
 
-        funcion_insertar.call(this, plantilla, config_conexion, datos);
+        funcion_insertar(plantilla, config_conexion, datos, this);
     }
 
     /**
