@@ -1,3 +1,4 @@
+import { Logger_DB } from "..";
 import { ColoresLogger } from "./ColoresLogger";
 
 /** 
@@ -41,10 +42,10 @@ export interface LoggerDB_ConfigE<T> extends LoggerConfigE {
 }
 
 /** Tipo para las funciones de comprobacion de Logger*/
-export type Funcion_comprobar<T> = (config: T) => Promise<boolean>;
+export type Funcion_comprobar<T> = (this: Logger_DB<T>, config: T) => Promise<boolean>;
 
 /** Tipo para las funciones de insercion de Logger*/
-export type Funcion_insertar<T> = (log: string, config: T, datos: datosLog) => Promise<void>;
+export type Funcion_insertar<T> = (this: Logger_DB<T>, log: string, config: T, datos: datosLog) => Promise<void>;
 
 /** Tipo de objeto con los datos sobre el registro  */
 export type datosLog = {

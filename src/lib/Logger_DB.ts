@@ -36,7 +36,7 @@ export class Logger_DB<T> extends Logger {
      * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
      */
     protected constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
-        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8" ) {
+        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8") {
         //Pasa los parametros comunes con la clase padre a esta.
         super(fichero, ruta, nivel, formato, formato_error, codificacion);
         //Parametros propios de la clase
@@ -104,7 +104,7 @@ export class Logger_DB<T> extends Logger {
         //Si conexion es undefined se le asgina el valor de funcion_comprobar_conexion
         conexion = conexion || this._funcion_comprobar_conexion;
         //Comprueba si se ejecuta la funcion
-        if (!await conexion(config)) {
+        if (!await conexion.call(this, config)) {
             //En caso de devolver false lanza un error
             throw new LoggerError("Fallo al conectar con la base de datos");
         }
@@ -196,10 +196,11 @@ export class Logger_DB<T> extends Logger {
         };
         //Renderiza la plantilla pasandole los valores que han de ser sustituidos
         //Como devuelve una funcion, la convierte a string
-        const plantilla = (formato.compilarPlantilla({... datos, Color: colores})).toString();
+        const plantilla = (formato.compilarPlantilla({ ...datos, Color: colores })).toString();
 
         //Ejecuta la funcion para realizar la carga del log
-        funcion_insertar(plantilla, config_conexion, datos);
+
+        funcion_insertar.call(this, plantilla, config_conexion, datos);
     }
 
     /**
