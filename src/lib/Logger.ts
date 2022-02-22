@@ -79,6 +79,7 @@ export class Logger {
      * @param formato string, formato normal, tiene un valor por defecto
      * @param formato_error string, formato para cuando se lanza un error, tiene un valor por defecto
      * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
+     * @throws LoggerError, si el fichero, la ruta o la codificacion no son validos
      * @remarks 
      * El formato permite caracteres especiales, que seran sustituidos por informacion
      * %{s} - Muestra los segundos,
@@ -257,6 +258,7 @@ export class Logger {
     /**
      * Comprueba si el string es valido como tipo de codificacion. En caso de no serlo lanzara una excepcion
      * @param codificacion string, tipo de codificacion
+     * @throws LoggerError, si la codificacion es no es valida
      * @returns BufferEncoding, 
      */
     protected comprobar_codificacion(codificacion: string): BufferEncoding{
@@ -300,6 +302,7 @@ export class Logger {
     /**
      * Comprueba el directorio donde se guardaran los 
      * @param ruta string, ruta al directorio
+     * @throws LoggerError, si la ruta no existe, no es un directorio o no se tiene permisos de lectura y escritura
      * @returns string, en caso de estar todo correcto, la ruta filtrada
      */
     protected comprobar_ruta(ruta: string): string {
@@ -328,6 +331,8 @@ export class Logger {
      * de lectura. Ademas de comprobar de que la extension sea log (evita la sobreescritura de ciertos ficheros).
      * En caso de no cumplirse alguna de las condiciones lanza una excepcion
      * @param fichero string, nombre del fichero con su extension
+     * @throws LoggerError, en caso de que el fichero existiera, al no ser un fichero, tener una extension diferente a
+     * .log o no tener permisos de lectura y escritura
      * @returns string, ruta absoluta del fichero
      */
     protected comprobar_fichero(fichero: string): string {
@@ -493,6 +498,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, cualquier tipo de error
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      */
     protected archivo<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
         //Copia el objeto para evitar modificarlo involuntariamente
@@ -544,6 +550,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -558,6 +565,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      * @remarks 
      * El parametro error, se us a para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -572,6 +580,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -586,6 +595,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -600,6 +610,7 @@ export class Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.

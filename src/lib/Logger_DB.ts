@@ -46,7 +46,7 @@ export class Logger_DB<T> extends Logger {
     }
 
     /**
-     * Crea una Instancia de Logger_DB, comprobando antes si conecta a la base de datos. Mediante la funcion comprobar_conexion
+     * Crea una Instancia de Logger_DB, comprobando antes si conecta a la base de datos. Mediante la funcion protegida comprobar_conexion
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config_conexion T, configuracion para la acceder a la base de datos, por defecto un objeto vacio
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos, por defecto una funcion vacia
@@ -60,6 +60,7 @@ export class Logger_DB<T> extends Logger {
      * @param funcion_comprobar_conexion Funcion_comprobar<T>, funcion para comprobar el acceso a la base de datos. Por defecto una funcion vacio que siempre devuelve true
      * @param funcion_insertar_log Funcion_insertar<T>, funcion para insertar el log en la base de datos
      * @param codificacion BufferEncoding, formato de codificacion para el archivo log, por defecto UTF-8
+     * @throws LoggerError, en caso de que la funcion para comprobar la conexion fallé 
      * @returns Logger_DB<T>, instancia de la clase. En caso de fallar la comprobacion lanza un error
      */
     public static async InstanciarClase<T>(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
@@ -98,6 +99,7 @@ export class Logger_DB<T> extends Logger {
      * y en caso de ser erronea lanza una excepcion
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config T, configuracion para conectar a la base de datos.
+     * @throws LoggerError, en caso de que la funcion para comprobar la conexion fallé 
      * @returns T, la configuración, en caso de conectarse correctamente. En caso de no conectarse lanza un error
      */
     protected async comprobar_conexion(config: T, conexion?: Funcion_comprobar<T>): Promise<T> {
@@ -108,12 +110,12 @@ export class Logger_DB<T> extends Logger {
             //En caso de devolver false lanza un error
             throw new LoggerError("Fallo al conectar con la base de datos");
         }
-        //Devuelve la
+        //Devuelve la configuracion
         return config;
     }
 
     /**
-     * Establece una nueva configuración de la conexion.
+     * Establece una nueva configuracion de la conexion. 
      * @typeParam T, Tipo de la configuración para la conexion
      * @param config_conexion T, configuración para la conexion
      */
@@ -128,6 +130,7 @@ export class Logger_DB<T> extends Logger {
      * @param config LoggerConfig, objeto de configuracion 
      * @param tipo boolean, determina si el formato es normal o de error.
      * @param colores Paleta de colores en caso de que config no lo tengo
+     * @throws LoggerError, en caso de que la funcion para comprobar la conexion fallé 
      * @returns LoggerConfigE, objeto de configuracion con las configuraciones filtradas
      */
     protected async configuracion_Async(config: LoggerDB_Config<T>, tipo: boolean, colores: ColoresLogger): Promise<LoggerDB_ConfigE<T>> {
@@ -154,6 +157,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, cualquier tipo de error
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      */
     protected async base_datos<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerDB_Config<T>, error: E): Promise<void> {
         //Copia el objeto para evitar modificarlo involuntariamente
@@ -210,6 +214,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -225,6 +230,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -240,6 +246,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -255,6 +262,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
@@ -270,6 +278,7 @@ export class Logger_DB<T> extends Logger {
      * @param msg string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
+     * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
