@@ -11,7 +11,7 @@ Es posible copiar el código fuente en el proyecto, sin embargo, es recomendable
 ### Copiar Librería
 Si se copian los archivos fuente o compilados, bastará con importarlos desde el archivo que lo necesite
 
-```JS
+```TS
 // TypeScript/JavaScript 
 import { Logger } from "./index";
 
@@ -56,7 +56,7 @@ npm link ../Logger-TS
 
 Para importar la librería
 
-```JS
+```TS
 // TypeScript/JavaScript 
 import { Logger } from "logger";
 
@@ -124,7 +124,7 @@ import { Logger, NIVEL_LOG, formato_defecto, formato_error_defecto } from "logge
 const log = new Logger("Archivo_Log.log", "ruta/archivo", NIVEL_LOG.TODOS, formato_defecto, formato_error_defecto);
 ```
 
-JavaScript (NodeJS)
+JavaScript ( NodeJS ) 
 ``` JS
 const {Logger, NIVEL_LOG, formato_defecto, formato_error_defecto } = require("logger");
 
@@ -157,7 +157,7 @@ console.log(log.fichero);
 console.log(log.ruta);
 ```
 
-JavaScript
+JavaScript ( NodeJS ) 
 ```JS
 const { Logger } = require("logger");
 
@@ -208,7 +208,7 @@ log.error_archivo("Muestra log de archivo 4");
 log.fatal_archivo("Muestra log de archivo 5");
 ```
 
-JavaScript
+JavaScript ( NodeJS ) 
 ```JS
 const { Logger } = require("logger");
 
@@ -249,7 +249,7 @@ try {
 }
 ```
 
-JavaScript
+JavaScript ( NodeJS ) 
 ```JS
 const { Logger } = require("logger");
 
@@ -333,7 +333,7 @@ log.log_archivo("Log normal", config);
 log.log_consola("Log error", config, new Error("Excepcion"));
 ```
 
-JavaScript
+JavaScript ( NodeJS ) 
 ```JS
 const { Logger } = require("logger");
 
@@ -375,6 +375,7 @@ El objeto **Colores** permite acceder a los valores por defecto
 | *AMARILLO*    | **\x1b[33m**     |
 | *AZUL*        | **\x1b[34m**     |
 
+TypeScript
 ```TS
 import { Colores, ColoresLogger, Logger, LoggerConfig } from "Logger";
 
@@ -398,6 +399,7 @@ config.colores = Colores;
 log.log_archivo("Texto Azul", config);
 ```
 
+JavaScript ( NodeJS ) 
 ```JS
 const { Logger, Colores } = require("logger");
 
@@ -447,7 +449,7 @@ log.nivel = NIVEL_LOG.ERROR;
 log.nivel = 4;
 ```
 
-JavaScript (NodeJS)
+JavaScript ( NodeJS ) 
 ```JS
 const {Logger, NIVEL_LOG } = require("logger");
 
@@ -477,7 +479,9 @@ Para crear una instancia de la clase, no es posible usar el constructor. Logger_
 
 El método estático **InstanciarClase**, devuelve una instancia de clase. Es un método asíncrono
 
+TypeScript
 ```TS
+//El ejemplo utiliza una base de datos MySQL
 import { Funcion_comprobar, Funcion_insertar, Logger_DB } from "logger";
 import { ConnectionConfig, createConnection } from "mysql";
 
@@ -489,20 +493,24 @@ const config = {
 }
 
 const comprobarconexion: Funcion_comprobar<ConnectionConfig> = async (config) => {
-    //Crea la conexión
+  //Devuelve una promesa, donde dentro se ejecutará la función para comprobar la conexión
+  return new Promise(resolve => {
+    //Crea la conexión con la base de datos
     const con = createConnection(config);
-    //Intenta establecer la conexión.
+    //Inicia la conexión
     con.connect((err) => {
-        if (err) {
-            //En caso de haber un error devuelve un error
-            return false;
-        }
+      //Destruye la conexión con la base de datos
+      con.destroy();
+      //En caso de error
+      if (err) {
+        console.log("Error al comprobar la conexión", err.message)
+        //En caso de error, devuelve un resolve con false
+        return resolve(false);
+      }
+      //En caso de no haber error, devuelve un resolve con false
+      return resolve(true);
     });
-
-    //Destruye la conexión
-    con.destroy();
-    //Devuelve la conexión
-    return true;
+  });
 }
 
 const insertarQuery: Funcion_insertar<ConnectionConfig> = async (quer, config) => {
@@ -512,14 +520,14 @@ const insertarQuery: Funcion_insertar<ConnectionConfig> = async (quer, config) =
     con.connect();
 
     //Ejecuta la query para insertar el log
-    con.query(`Insert into pruebas values ('${quer}')`, function (err, fias) {
+    con.query(`Insert into pruebas values ('${quer}')`, function (err, resultado) {
         if (err) {
             //En caso de error lo muestra por consola
             console.log("Error", err.message);
             return;
         }
         //En caso de una ejecucion correcta muestra un mensaje en la consola
-        console.log("Consulta ejecutada con éxito:", fias);
+        console.log("Consulta ejecutada con éxito:", resultado);
     });
     //Finaliza la conexión
     con.end();
@@ -545,7 +553,9 @@ async function main() {
 main();
 ```
 
+JavaScript ( NodeJS ) 
 ```JS
+//El ejemplo utiliza una base de datos MySQL
 const { Logger_DB } = require("logger");
 const { createConnection } = require("mysql");
 
@@ -557,20 +567,24 @@ const config = {
 }
 
 const comprobarconexion = async (config) => {
-    //Crea la conexión
+   //Devuelve una promesa, donde dentro se ejecutará la función para comprobar la conexión
+  return new Promise(resolve => {
+    //Crea la conexión con la base de datos
     const con = createConnection(config);
-    //Intenta establecer la conexión.
+    //Inicia la conexión
     con.connect((err) => {
-        if (err) {
-            //En caso de haber un error devuelve un error
-            return false;
-        }
+      //Destruye la conexión con la base de datos
+      con.destroy();
+      //En caso de error
+      if (err) {
+        console.log("Error al comprobar la conexión", err.message)
+        //En caso de error, devuelve un resolve con false
+        return resolve(false);
+      }
+      //En caso de no haber error, devuelve un resolve con false
+      return resolve(true);
     });
-
-    //Destruye la conexión
-    con.destroy();
-    //Devuelve la conexión
-    return true;
+  });
 }
 
 const insertarQuery = async (quer, config) => {
@@ -580,14 +594,14 @@ const insertarQuery = async (quer, config) => {
     con.connect();
 
     //Ejecuta la query para insertar el log
-    con.query(`Insert into pruebas values ('${quer}')`, function (err, fias) {
+    con.query(`Insert into pruebas values ('${quer}')`, function (err, resultado) {
         if (err) {
             //En caso de error lo muestra por consola
             console.log("Error", err.message);
             return;
         }
         //En caso de una ejecucion correcta muestra un mensaje en la consola
-        console.log("Consulta ejecutada con éxito:", fias);
+        console.log("Consulta ejecutada con éxito:", resultado);
     });
     //Finaliza la conexión
     con.end();
@@ -615,6 +629,8 @@ main();
 
 ### Tipo Genérico T
 Permite establecer el tipo de la configuración para la conexión (en TypeScript). El tipo genérico determina el tipo de configuración de la conexión para la instancia.
+
+TypeScript
 ```TS
 const log = await Logger_DB.InstanciarClase<ConnectionConfig>(config, insertarQuery, comprobarconexion);
 ```
@@ -629,3 +645,207 @@ LoggerDB_Config&lt;T&gt; posee tres propiedades, todas son opcionales:
 - **config_conexion** <*T*>, permite sustituir la configuración para la conexión. 
 - **funcion_insertar** <*Funcion_insertar&lt;T&gt;*>, permite cambiar la función para insertar en la base de datos.
 - **funcion_comprobar** <*Funcion_comprobar&lt;T&gt;*>, permite cambiar la función para comprobar la conexión (La función se ejecuta al cambiar la función de insertar, en caso de solo cambiar función de comprobar esta no se utilizará).
+
+### Funciones
+#### Función insertar&lt;T&gt;
+La función insertar se ejecuta al llamar a cualquiera de métodos para registrar en la base de datos, la función puede recibir hasta 3 parámetros:
+- **log** <*string*>, mensaje para registrar en la base de datos *(El mensaje puede tener un tamaño mayor al que admite la base de datos, es conveniente una columna de gran tamaño o implementar un método para comprobarlo en la base de datos antes de ejecutarlo)*.
+- **config** <*T*>, configuración para la base de datos, el tipo de este será igual a tipo genérico del objeto de Logger_DB
+- **datos** <*datosLog*>, tipo de objeto con los datos sobre el registro (Estos datos se usan para sustituir por su parámetro correspondiente en el formato, el objeto permite trabajar con estos datos de forma más personal, por ejemplo insertarlos por separado en la base de datos). Los datos del objeto son: 
+    - **tipo** <*string*>, tipo de log
+    - **mensaje** <*string*>, mensaje pasado al método
+    - **linea** <*string*>, línea donde se lanza el error o se llama al método
+    - **nombre_error** <*string*>, nombre del error
+    - **mensaje_error** <*string*>, mensaje del error
+    - **archivo** <*string*>, archivo donde se lanza el error o se llama al método
+    - **funcion** <*string*>, módulo donde se lanza el error o se llama al método
+- **logger** <*Logger_DB&lt;T&gt;*>, instancia de *Logger_DB*. Permite hacer uso de sus métodos para distintos tipos de registros. 
+Ejemplo de una función: 
+
+TypeScript
+```TS
+//El ejemplo utiliza una base de datos MySQL
+import { ConnectionConfig, createConnection } from "mysql";
+import { datosLog, Logger_DB } from "logger";
+
+//Función para insertar en la base de datos
+async function insertar_base_datos(log: string, config: ConnectionConfig, datos: datosLog, logger: Logger_DB<ConnectionConfig>): Promise<void> {
+    //Crea la conexión con la base de datos
+    const con = createConnection(config);
+    //Callback para la función query
+    const queryCallback: Function = (err, resultado): void => {
+        if (err) {
+            //En caso de error utiliza el parámetro logger para registrar el log, (también es posible usar otro sistema como console.log())
+            logger.log_consola("Error, fallo al insertar el log", {}, err);
+        } else {
+            //En caso de funcionar correctamente lo imprime por consola
+            logger.log_consola(`Resultado ${resultado}`);
+        }
+    };
+
+    //Inicia la conexión
+    con.connect();
+
+    //Suponiendo que la columna pruebas tenga un varchar(150), comprueba si log tiene una longitud superior a 150
+    if (log.length > 150) {
+        //Si la longitud del log excede los 150 caracteres cambia el tipo de log a uno más corto
+        con.query(`Insert into pruebas values ('Error en el archivo: ${datos.archivo}, Mensaje error: ${datos.mensaje_error}')`, queryCallback);
+    } else {
+        //Si la longitud del log es menor a la máxima se inserta directamente el log
+        con.query(`Insert into pruebas values ('${log}')`, queryCallback);
+    }
+
+    //Finaliza la conexión con la base de datos
+    con.end();
+}
+```
+
+JavaScript ( NodeJS )
+```JS 
+//El ejemplo utiliza una base de datos MySQL
+const { createConnection } = require("mysql");
+
+//Funcion para insertar en la base de datos
+async function insertar_base_datos(log, config, datos, logger) {
+    //Crea la conexión con la base de datos
+    const con = createConnection(config);
+    //Callback para la función query
+    const queryCallback = (err, resultado) => {
+        if (err) {
+            //En caso de error utiliza el parámetro logger para registrar el log, (también es posible usar otro sistema como console.log())
+            logger.log_consola("Error, fallo al insertar el log", {}, err);
+        } else {
+            //En caso de funcionar correctamente lo imprime por consola
+            logger.log_consola(`Resultado ${resultado}`);
+        }
+    };
+
+    //Inicia la conexión
+    con.connect();
+
+    //Suponiendo que la columna pruebas tenga un varchar(150), comprueba si log tiene una longitud superior a 150
+    if (log.length > 150) {
+        //Si la longitud del log excede los 150 caracteres cambia el tipo de log a uno más corto
+        con.query(`Insert into pruebas values ('Error en el archivo: ${datos.archivo}, Mensaje error: ${datos.mensaje_error}')`, queryCallback);
+    } else {
+        //Si la longitud del log es menor a la máxima se inserta directamente el log
+        con.query(`Insert into pruebas values ('${log}')`, queryCallback);
+    }
+
+    //Finaliza la conexión con la base de datos
+    con.end();
+}
+```
+#### Funcion comprobar&lt;T&gt;
+La función comprobar se ejecuta al crear una instancia de la clase (con ` Logger_DB.InstanciarClase()`). También al cambiar la configuración de la conexión, mediante el objeto de configuración al ejecutar el registro o al cambiar la configuración de la instancia mediante el método `establecerConfigConexion()`. 
+
+La función puede recibir hasta 3 parámetros:
+
+- **config** <*T*>, configuración para la base de datos, el tipo de este será igual a tipo genérico del objeto de Logger_DB
+- **logger** <*Logger_DB&lt;T&gt;*>, instancia de *Logger_DB*. Permite hacer uso de sus metodos para distintos tipos de registros. 
+Ejemplo de una funcion: 
+
+TypeScript
+```TS
+//El ejemplo utiliza una base de datos MySQL
+import { ConnectionConfig, createConnection } from "mysql";
+import { Logger_DB } from "logger";
+
+async function comprobar_conexion(config: ConnectionConfig, logger: Logger_DB<ConnectionConfig>): Promise<boolean> {
+  //Devuelve una promesa, donde dentro se ejecutará la función para comprobar la conexión
+  return new Promise(resolve => {
+    //Crea la conexión con la base de datos
+    const con = createConnection(config);
+    //Inicia la conexión
+    con.connect((err) => {
+      //Destruye la conexión con la base de datos
+      con.destroy();
+      //En caso de error
+      if (err) {
+        logger.log_consola("Error al comprobar la conexión", {}, err)
+        //En caso de error, devuelve un resolve con false
+        return resolve(false);
+      }
+      //En caso de no haber error, devuelve un resolve con false
+      return resolve(true);
+    });
+  });
+}
+```
+
+JavaScript ( NodeJS )
+```JS
+//El ejemplo utiliza una base de datos MySQL
+const { createConnection } = require("mysql");
+
+async function comprobar_conexion(config, logger) {
+    //Devuelve una promesa, donde dentro se ejecutará la función para comprobar la conexión
+    return new Promise(resolve => {
+        //Crea la conexión con la base de datos
+        const con = createConnection(config);
+        //Inicia la conexión
+        con.connect((err) => {
+            //Destruye la conexión con la base de datos
+            con.destroy();
+            //En caso de error
+            if (err) {
+                console.log("Error al comprobar la conexión", err.message)
+                logger.log_consola("Error al comprobar la conexión", {}, err)
+                //En caso de error, devuelve un resolve con false
+                return resolve(false);
+            }
+            //En caso de no haber error, devuelve un resolve con false
+            return resolve(true);
+        });
+    });
+}
+```
+
+## Extender Logger
+
+Es posible añadir métodos propios extendiendo la clase *Logger*. Todos los métodos de *Logger*, son de tipo *protected* por lo que permite acceder a ellos desde las clases que la desciendan. 
+
+La clase *Logger* contiene una propiedad llamada *_exp_logger*, esta propiedad permite conocer si un error ha sido lanzado desde alguno de los métodos de la clase.
+
+Esto es útil principalmente para los formatos de los logs. 
+
+Los errores permiten obtener información que no proporciona JavaScript con ningún otro método. Algunos metodos como `log_consola()` o similares permiten pasar un error como tercer parámetro opcional, si se pasa una instancia de algún error log se trata por defecto como un log de error. En caso de no pasar ningún error, sé instancia uno de la clase *Error*. 
+
+La expresión regular permite diferenciar entre una instancia de la clase *Error* creada por defecto y una que ha sido pasada por parámetro.
+
+``` TS
+// El tercer parámetro será igual a new Error()
+// Como es definido en el código ( TypeScript ) -> error: E = <E>new Error()
+log.log_consola("Formato normal", {});
+
+// Instancia del error, a pesar de ser igual que el parámetro por defecto mostrará un log de error
+log.log_consola("Formato de error", {}, new Error());
+```
+
+*Logger* por defecto usa una expresión regular ajustada únicamente a los parámetros de *Logger* y *Logger_DB*. Aunque también ofrece una expresión por defecto que valida todos los métodos de las clases. 
+
+```TS
+// Los métodos de consola, archivo y base de datos son los únicos que instancian un error, a lo que se añade antes los tipos de log. 
+export const exp_logger = /at Logger(_DB)?\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo)|(base_datos))/;
+
+// Comprueba si el error proviene de cualquier método de una clase que empiece por Logger (por ejemplo Logger y Logger_DB validarían)
+export const exp_logger_generico = /at Logger[0-9A-Z_$]*\.[$A-Z_][0-9A-Z_$]*/i;
+```
+
+Para establecer una expresión regular propia bastaría con incluirla en el constructor. 
+
+Por ejemplo si *Logger_DB*, tuviera una expresión regular propia, seria: 
+```TS
+//Constructor de Logger_DB (es inaccesible desde fuera de la clase o una clase que la extienda) 
+protected constructor(config_conexion: T = <T>{}, funcion_insertar_log: Funcion_insertar<T> = funcion_insertar_defecto, funcion_comprobar_conexion: Funcion_comprobar<T> = funcion_comprobar_defecto,
+        fichero: string = "logger.log", ruta: string = "./", nivel: NIVEL_LOG = NIVEL_LOG.TODOS, formato: string = formato_defecto, formato_error: string = formato_error_defecto, codificacion: BufferEncoding = "utf-8") {
+        //Pasa los parámetros comunes con la clase padre a esta.
+        super(fichero, ruta, nivel, formato, formato_error, codificacion);
+        //Parámetros propios de la clase
+        this._config_conexion = config_conexion;
+        this._funcion_insertar_log = funcion_insertar_log;
+        this._funcion_comprobar_conexion = funcion_comprobar_conexion;
+        //Esto modificará la expresión regular que está establecida por defecto
+        this._exp_logger = new RegExp("Expresion regular");
+    }
+```
