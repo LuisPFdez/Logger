@@ -53,12 +53,12 @@ String.prototype.compilarPlantilla = function (this: string, args: Record<string
 /**
  * Expresion regular por defecto para comprobar la prodecencia de logger
  */
-export const exp_logger = /at Logger\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo)|(base_datos))/;
+export const exp_logger = /at Logger(_DB)?\.((log)|(info)|(aviso)|(error)|(fatal))_((consola)|(archivo)|(base_datos))/;
 
 /**
  * Expresion regular para comprobar si un error procede de la clase logger
  */
-export const exp_logger_generico = /at Logger\.[$A-Z_][0-9A-Z_$]*/;
+export const exp_logger_generico = /at Logger[0-9A-Z_$]*\.[$A-Z_][0-9A-Z_$]*/i;
 /**
  * Clase para el manejo del sistema de logs
  */
