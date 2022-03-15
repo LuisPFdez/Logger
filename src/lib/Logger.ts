@@ -1,6 +1,6 @@
 import { LoggerError } from "./Error";
 import { Colores, ColoresLogger } from "./ColoresLogger";
-import { LoggerConfig, LoggerConfigE } from "./LoggerConfig";
+import { LoggerConfig, LoggerConfigE, toString_I } from "./LoggerConfig";
 
 import { resolve, extname, basename } from "path";
 import { accessSync, appendFileSync, existsSync, lstatSync } from "fs";
@@ -261,11 +261,11 @@ export class Logger {
      * @throws LoggerError, si la codificacion es no es valida
      * @returns BufferEncoding, 
      */
-    protected comprobar_codificacion(codificacion: string): BufferEncoding{
+    protected comprobar_codificacion(codificacion: string): BufferEncoding {
         //Comprueba si no es valido
-        if ( !Buffer.isEncoding(codificacion) ){
+        if (!Buffer.isEncoding(codificacion)) {
             //En caso de no ser valido lanza la excepcion
-            throw new LoggerError("La codificación "+codificacion+" no es válida");
+            throw new LoggerError("La codificación " + codificacion + " no es válida");
         }
         //Devuelve la codificacion
         return codificacion;
@@ -372,13 +372,14 @@ export class Logger {
     /**
      * Muestra un mensaje de log por consola, 
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
      * @param nivel, nivel necesario para registrar el log
      * @param tipo string, tipo del mensaje 
-     * @param msg string, mensaje del log
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, cualquier tipo de error
      */
-    protected consola<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
+    protected consola<E extends Error, M extends toString_I>(nivel: NIVEL_LOG, tipo: string, msg: M | string, config: LoggerConfig, error: E): void {
         //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
 
@@ -405,7 +406,7 @@ export class Logger {
         //Como devuelve una funcion, la convierte a string
         const plantilla = (formato.compilarPlantilla({
             tipo: tipo,
-            mensaje: msg,
+            mensaje: msg.toString(),
             linea: linea,
             nombre_error: nombre_error,
             mensaje_error: mensaje_error,
@@ -421,28 +422,30 @@ export class Logger {
     /**
      * Muestra un mensaje por consola del tipo LOG
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, error para mostrar en el log
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public log_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public log_consola<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
     /**
      * Muestra un mensaje por consola del tipo INFO
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, error para mostrar en el log
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public info_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public info_consola<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
         this.consola(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
@@ -450,14 +453,15 @@ export class Logger {
     /**
      * Muestra un mensaje por consola del tipo AVISO
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, error para mostrar en el log
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public aviso_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public aviso_consola<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         //LLama a consola, con tipo 
         this.consola(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
@@ -465,42 +469,45 @@ export class Logger {
     /**
      * Muestra un mensaje por consola del tipo ERROR
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, error para mostrar en el log
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public error_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public error_consola<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
     /**
      * Muestra un mensaje por consola del tipo FATAL
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, error para mostrar en el log
      * @remarks 
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public fatal_consola<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public fatal_consola<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.consola(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 
     /**
      * Guarda un mensaje de log en el archivo
      * @typeParam E - Tipo que desciende de error 
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
      * @param nivel, nivel necesario para registrar el log
      * @param tipo string, tipo del mensaje 
-     * @param msg string, mensaje del log
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, cualquier tipo de error
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
      */
-    protected archivo<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerConfig, error: E): void {
+    protected archivo<E extends Error, M extends toString_I>(nivel: NIVEL_LOG, tipo: string, msg: M | string, config: LoggerConfig, error: E): void {
         //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
 
@@ -531,7 +538,7 @@ export class Logger {
         //Como devuelve una funcion, la convierte a string
         const plantilla = (formato.compilarPlantilla({
             tipo: tipo,
-            mensaje: msg,
+            mensaje: msg.toString(),
             linea: linea,
             nombre_error: nombre_error,
             mensaje_error: mensaje_error,
@@ -547,7 +554,8 @@ export class Logger {
     /**
      * Guarda un mensaje de log en el archivo del Tipo LOG
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
@@ -555,14 +563,15 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public log_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public log_archivo<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
     /**
      * Guarda un mensaje de log en el archivo del Tipo INFO
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
@@ -570,14 +579,15 @@ export class Logger {
      * El parametro error, se us a para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public info_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public info_archivo<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
 
     /**
      * Guarda un mensaje de log en el archivo del Tipo AVISO
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
@@ -585,14 +595,15 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public aviso_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public aviso_archivo<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
     /**
      * Guarda un mensaje de log en el archivo del Tipo ERROR 
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
@@ -600,14 +611,15 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public error_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public error_archivo<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
     /**
      * Guarda un mensaje de log en el archivo del Tipo FATAL
      * @typeParam E - Tipo que desciende de error 
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, si el fichero o la codificacion son modificados mediante config y no son validos
@@ -615,7 +627,7 @@ export class Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public fatal_archivo<E extends Error>(msg: string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
+    public fatal_archivo<E extends Error, M extends toString_I>(msg: M | string, config: LoggerConfig = {}, error: E = <E>new Error()): void {
         this.archivo(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 }

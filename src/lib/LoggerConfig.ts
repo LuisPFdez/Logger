@@ -57,3 +57,7 @@ export type datosLog = {
     archivo: string;
     funcion: string;
 };
+
+export interface toString_I {
+    toString(): string;
+}

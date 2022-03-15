@@ -1,7 +1,7 @@
 import { LoggerError } from "./Error";
 import { ColoresLogger } from "./ColoresLogger";
 import { formato_defecto, formato_error_defecto, Logger, NIVEL_LOG } from "./Logger";
-import { datosLog, Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, } from "./LoggerConfig";
+import { datosLog, Funcion_comprobar, Funcion_insertar, LoggerDB_Config, LoggerDB_ConfigE, toString_I, } from "./LoggerConfig";
 
 // Funciones por defecto
 /** Funcion vacia, para comprobar la conexion por defecto, siempre devuelve true */
@@ -152,14 +152,15 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
      * @param nivel, nivel necesario para registrar el log
      * @param tipo string, tipo del mensaje 
-     * @param msg string, mensaje del log
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion 
      * @param error E, cualquier tipo de error
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
      */
-    protected async base_datos<E extends Error>(nivel: NIVEL_LOG, tipo: string, msg: string, config: LoggerDB_Config<T>, error: E): Promise<void> {
+    protected async base_datos<E extends Error, M extends toString_I>(nivel: NIVEL_LOG, tipo: string, msg: M | string, config: LoggerDB_Config<T>, error: E): Promise<void> {
         //Copia el objeto para evitar modificarlo involuntariamente
         config = { ...config };
 
@@ -191,7 +192,7 @@ export class Logger_DB<T> extends Logger {
         });
         const datos: datosLog = {
             tipo: tipo,
-            mensaje: msg,
+            mensaje: msg.toString(),
             linea: linea,
             nombre_error: nombre_error,
             mensaje_error: mensaje_error,
@@ -211,7 +212,8 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos del Tipo LOG
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros 
      * @param error E, error para mostrar en el log
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
@@ -219,7 +221,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public log_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public log_base_datos<E extends Error, M extends toString_I>(msg: M | string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.LOG, "LOG", msg, config, error);
     }
 
@@ -227,7 +229,8 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos del Tipo INFO
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
@@ -235,7 +238,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public info_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public info_base_datos<E extends Error, M extends toString_I>(msg: M | string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.INFO, "INFO", msg, config, error);
     }
 
@@ -243,7 +246,8 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos del Tipo AVISO
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
@@ -251,7 +255,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public aviso_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public aviso_base_datos<E extends Error, M extends toString_I>(msg: M | string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.AVISO, "AVISO", msg, config, error);
     }
 
@@ -259,7 +263,8 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos del Tipo ERROR 
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
@@ -267,7 +272,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public error_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public error_base_datos<E extends Error, M extends toString_I>(msg: M | string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.ERROR, "ERROR", msg, config, error);
     }
 
@@ -275,7 +280,8 @@ export class Logger_DB<T> extends Logger {
      * Guarda un mensaje de log en la base de datos del Tipo FATAL
      * @typeParam E - Tipo que desciende de error 
      * @typeParam T - Tipo de la configuración para la conexion
-     * @param msg string, mensaje del log
+     * @typeParam M - Tipo para el mensaje, debe de implementar el metodo toString()
+     * @param msg M | string, mensaje del log
      * @param config LoggerConfig, configuracion, los colores no deber ser definido o se mostraran sus codigo en los ficheros
      * @param error E, error para mostrar en el log
      * @throws LoggerError, en caso de cambiar la configuración de la base de datos y no poder establecer ninguna conexion
@@ -283,7 +289,7 @@ export class Logger_DB<T> extends Logger {
      * El parametro error, se usa para obtener el lugar de llamada de la funcion, tambien puede usarse para
      * manejar un mensaje de error. Por defecto error es una instancia de la clase Error.
      */
-    public fatal_base_datos<E extends Error>(msg: string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
+    public fatal_base_datos<E extends Error, M extends toString_I>(msg: M | string, config: LoggerDB_Config<T> = {}, error: E = <E>new Error()): void {
         this.base_datos(NIVEL_LOG.FATAL, "FATAL", msg, config, error);
     }
 
