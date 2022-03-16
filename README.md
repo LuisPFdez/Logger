@@ -185,7 +185,7 @@ La clase logger ofrece dos formas de registrar los logs, mediante la consola o e
 
 Todos los métodos, independientemente del nivel y la manera de registrarlo, reciben 3 parámetros. Siendo dos de ellos opcionales.
 
-1. **msg** <*string*>, mensaje del log, es el único parámetro obligatorio.
+1. **msg** <*string | M*>, mensaje del log, es el único parámetro obligatorio. El tipo puede ser un string o cualquier tipo objeto que implemente el método *toString()*
 2. **config** <*LoggerConfig*>, configuración especifica para el log (fichero, formato y/o colores). En caso de no querer modificar la configuración, pero sea necesario pasar un tercer parámetro, bastará con un objeto vacío (valor por defecto).  
 3. **error** <*Error*>, excepción de la que se obtiene datos del error. En caso de no recibir ninguna, su valor por defecto, será una instancia de la clase Error (permite obtener ciertos datos como el fichero, el método o la línea desde donde se ha llamado).
 
@@ -799,6 +799,153 @@ async function comprobar_conexion(config, logger) {
         });
     });
 }
+```
+## Tipo del mensaje ( tipo genérico M )
+Desde la versión 1.3, no es necesario que el mensaje del log sea obligatoriamente un string. Cualquier tipo u objeto que tenga el método `toString()` declarado (incluso el tipo string también tiene un método `toString()`);
+
+Esto es válido tanto para Logger (métodos de archivo y consola) como Logger_DB (método de base_datos). 
+
+Todos los objetos o tipos que se pasen serán convertidos a *string*.
+```TS
+//Parte del código de la clase Logger (método protegido 'Archivo')
+const plantilla = (formato.compilarPlantilla({
+    tipo: tipo,
+    mensaje: msg.toString(),
+    linea: linea,
+    nombre_error: nombre_error,
+    mensaje_error: mensaje_error,
+    archivo: archivo,
+    Color: colores,
+    funcion: funcion
+})).toString();
+```
+
+Algunos objetos, aunque poseen la propiedad `toString()` puede no imprimir correctamente las propiedades, por ejemplo, los objetos de JavaScript al hacer el toString() imprimir[object Object]. 
+
+TypeScript
+```TS
+import { Logger } from "logger";
+
+class Objeto {
+
+    propiedad1: string;
+    propiedad2: string;
+
+    constructor(propiedad1: string, propiedad2: string) {
+        this.propiedad1 = propiedad1;
+        this.propiedad2 = propiedad2;
+    }
+
+    toString(): string {
+        return `Propiedad 1 -> ${this.propiedad1}, Propiedad 2 -> ${this.propiedad2}.`;
+    }
+}
+
+//El método toString() de un objeto, por defecto, imprime [object Object]. 
+//A continuación modifica el método para que el toString() funcione correctamente
+//Al ser un método propio es posible modificar la salida de distintas formas
+Object.prototype.toString = function (this: Record<string, any>): string {
+    //El objeto resultado empezará por '{' del objeto
+    let resultado = "{";
+    //Obtiene todas las claves del objeto y las recorre
+    Object.keys(this).forEach((elemento: string) => {
+        //Contatena cada posición del objeto al resultado total. 
+        //El ?. evita que si toString() no está declarado falle
+        resultado = `${resultado} ${elemento} :: '${this[elemento].toString?.()}',`;
+    });
+
+    //Elimina la última coma y cierra la llave '}'
+    resultado = `${resultado.slice(0, -1)} }`;
+    //Devuelve el resultado
+    return resultado;
+};
+
+const log = new Logger();
+const obj = {
+    propiedad1: "Valor 1",
+    propiedad2: "Valor 2",
+    propiedad3: [1, 2, 3, 4],
+    propiedad4: {
+        propiedad_anidada1: "Valor 1",
+        propiedad_anidada2: "Valor 2",
+    }
+
+};
+
+log.log_consola("Con un string sigue funcionando igual 😄");
+//El método to string de un array simplemente mostrará los elementos separados por comas
+log.log_consola([1, 2, 3, 4]);
+//La salida del objeto será según el nuevo método
+log.log_consola(obj);
+//Otra forma es usar el método JSON.stringify que convierte el objeto a un string
+log.log_consola(JSON.stringify(obj));
+//La clase objeto sobreescribe el método toString()
+log.log_consola(new Objeto("Valor 1", "Valor 2"));
+//Incluso las funciones implementan un toString() y funciona al ser mostrado por consola
+log.log_consola(log.log_archivo);
+```
+
+JavaScript ( NodeJS )
+```JS
+const { Logger } = require("logger");
+
+class Objeto {
+
+    propiedad1;
+    propiedad2;
+
+    constructor(propiedad1, propiedad2) {
+        this.propiedad1 = propiedad1;
+        this.propiedad2 = propiedad2;
+    }
+
+    toString() {
+        return `Propiedad 1 -> ${this.propiedad1}, Propiedad 2 -> ${this.propiedad2}.`;
+    }
+}
+
+//El método toString() de un objeto, por defecto, imprime [object Object]. 
+//A continuación modifica el método para que el toString() funcione correctamente
+//Al ser un método propio es posible modificar la salida de distintas formas
+Object.prototype.toString = function () {
+    //El objeto resultado empezará por '{' del objeto
+    let resultado = "{";
+    //Obtiene todas las claves del objeto y las recorre
+    Object.keys(this).forEach((elemento) => {
+        //Contatena cada posición del objeto al resultado total. 
+        //El ?. evita que si toString() no está declarado falle
+        resultado = `${resultado} ${elemento} :: '${this[elemento].toString?.()}',`;
+    });
+
+    //Elimina la última coma y cierra la llave '}'
+    resultado = `${resultado.slice(0, -1)} }`;
+    //Devuelve el resultado
+    return resultado;
+};
+
+const log = new Logger();
+const obj = {
+    propiedad1: "Valor 1",
+    propiedad2: "Valor 2",
+    propiedad3: [1, 2, 3, 4],
+    propiedad4: {
+        propiedad_anidada1: "Valor 1",
+        propiedad_anidada2: "Valor 2",
+    }
+
+};
+
+log.log_consola("Con un string sigue funcionando igual 😄");
+//El método to string de un array simplemente mostrará los elementos separados por comas
+log.log_consola([1, 2, 3, 4]);
+//La salida del objeto será según el nuevo método
+log.log_consola(obj);
+//Otra forma es usar el método JSON.stringify que convierte el objeto a un string
+log.log_consola(JSON.stringify(obj));
+//La clase objeto sobreescribe el método toString()
+log.log_consola(new Objeto("Valor 1", "Valor 2"));
+//Incluso las funciones implementan un toString() y funciona al ser mostrado por consola
+log.log_consola(log.log_archivo);
 ```
 
 ## Extender Logger
