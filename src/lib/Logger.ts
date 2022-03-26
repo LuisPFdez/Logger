@@ -177,7 +177,7 @@ export class Logger {
         formato = formato.replace(new RegExp("%{i}", "g"), "${`0${new Date().getMinutes()}`.slice(-2)}");
         formato = formato.replace(new RegExp("%{H}", "g"), "${new Date().getHours()}");
         formato = formato.replace(new RegExp("%{D}", "g"), "${new Date().getDate()}");
-        formato = formato.replace(new RegExp("%{M}", "g"), "${new Date().getMonth()}");
+        formato = formato.replace(new RegExp("%{M}", "g"), "${new Date().getMonth() + 1}");
         formato = formato.replace(new RegExp("%{Y}", "g"), "${new Date().getFullYear()}");
 
         //Informacion general
